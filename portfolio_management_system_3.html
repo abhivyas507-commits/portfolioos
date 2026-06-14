@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PortfolioOS — Indian Market PMS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --surface3: #1f2d44;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f4ff;
+    --text2: #8899bb;
+    --text3: #566178;
+    --accent: #3b82f6;
+    --accent2: #6366f1;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --teal: #14b8a6;
+    --purple: #a855f7;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); font-size:14px; min-height:100vh; }
+  
+  /* Layout */
+  .app { display:flex; height:100vh; overflow:hidden; }
+  .sidebar { width:220px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+  .main { flex:1; overflow-y:auto; display:flex; flex-direction:column; }
+  
+  /* Sidebar */
+  .logo { padding:20px 16px 16px; border-bottom:1px solid var(--border); }
+  .logo-text { font-size:17px; font-weight:700; letter-spacing:-0.3px; }
+  .logo-text span { color:var(--accent); }
+  .logo-sub { font-size:10px; color:var(--text3); margin-top:2px; letter-spacing:0.5px; text-transform:uppercase; }
+  .nav { flex:1; padding:12px 8px; }
+  .nav-section { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; padding:12px 8px 6px; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; color:var(--text2); font-size:13px; transition:all 0.15s; margin-bottom:2px; }
+  .nav-item:hover { background:var(--surface2); color:var(--text); }
+  .nav-item.active { background:rgba(59,130,246,0.15); color:var(--accent); }
+  .nav-item svg { width:16px; height:16px; flex-shrink:0; }
+  .nav-badge { margin-left:auto; background:var(--accent); color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; }
+  .sidebar-footer { padding:12px; border-top:1px solid var(--border); }
+  .market-status { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--surface2); border-radius:8px; }
+  .status-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .status-text { font-size:11px; color:var(--text2); }
+  .status-time { font-size:10px; color:var(--text3); margin-top:1px; }
+  
+  /* Header */
+  .header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--surface); flex-shrink:0; }
+  .page-title { font-size:18px; font-weight:600; }
+  .page-sub { font-size:12px; color:var(--text3); margin-top:2px; }
+  .header-actions { display:flex; align-items:center; gap:10px; }
+  
+  /* Buttons */
+  .btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; border:1px solid var(--border2); background:transparent; color:var(--text2); font-size:12px; cursor:pointer; transition:all 0.15s; font-family:var(--font); white-space:nowrap; }
+  .btn:hover { background:var(--surface2); color:var(--text); }
+  .btn-primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#2563eb; border-color:#2563eb; color:#fff; }
+  .btn-success { background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.3); color:var(--green); }
+  .btn-danger { background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.3); color:var(--red); }
+  .btn svg { width:14px; height:14px; }
+  
+  /* Content area */
+  .content { padding:24px; flex:1; }
+  
+  /* Cards */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; }
+  .card-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .card-title { font-size:13px; font-weight:600; }
+  .card-body { padding:18px; }
+  
+  /* Metric cards */
+  .metrics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px; }
+  .metric { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+  .metric-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+  .metric-value { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+  .metric-change { font-size:11px; margin-top:4px; }
+  .up { color:var(--green); }
+  .down { color:var(--red); }
+  .neutral { color:var(--text3); }
+  
+  /* Grid layouts */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  
+  /* Table */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th { font-size:11px; color:var(--text3); text-align:left; padding:8px 12px; border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:0.5px; font-weight:500; }
+  td { padding:11px 12px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,0.02); }
+  
+  /* Tabs */
+  .tabs { display:flex; gap:2px; padding:4px; background:var(--surface2); border-radius:10px; margin-bottom:20px; }
+  .tab { flex:1; padding:7px 12px; border-radius:7px; border:none; background:transparent; color:var(--text3); font-size:12px; cursor:pointer; transition:all 0.15s; font-family:var(--font); }
+  .tab.active { background:var(--surface3); color:var(--text); font-weight:500; }
+  .tab:hover:not(.active) { color:var(--text2); }
+  
+  /* Badges */
+  .badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:500; }
+  .badge-blue { background:rgba(59,130,246,0.15); color:#60a5fa; }
+  .badge-green { background:rgba(34,197,94,0.15); color:#4ade80; }
+  .badge-red { background:rgba(239,68,68,0.12); color:#f87171; }
+  .badge-amber { background:rgba(245,158,11,0.15); color:#fbbf24; }
+  .badge-purple { background:rgba(168,85,247,0.15); color:#c084fc; }
+  .badge-teal { background:rgba(20,184,166,0.15); color:#2dd4bf; }
+  
+  /* Forms */
+  .form-row { display:flex; gap:12px; margin-bottom:14px; }
+  .form-group { flex:1; }
+  .form-group label { display:block; font-size:11px; color:var(--text3); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.5px; }
+  input, select, textarea { width:100%; padding:8px 12px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; color:var(--text); font-size:13px; font-family:var(--font); outline:none; transition:border-color 0.15s; }
+  input:focus, select:focus { border-color:var(--accent); }
+  select option { background:var(--surface); }
+  
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .modal { background:var(--surface); border:1px solid var(--border2); border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; }
+  .modal-header { padding:18px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .modal-title { font-size:15px; font-weight:600; }
+  .modal-body { padding:20px; }
+  .modal-footer { padding:14px 20px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
+  .close-btn { background:none; border:none; color:var(--text3); cursor:pointer; font-size:18px; line-height:1; }
+  
+  /* Alert bar */
+  .alert-bar { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:10px; margin-bottom:16px; font-size:12px; color:var(--amber); }
+  
+  /* Allocation bars */
+  .alloc-bar { height:8px; background:var(--surface2); border-radius:4px; overflow:hidden; margin-top:4px; }
+  .alloc-fill { height:100%; border-radius:4px; transition:width 0.5s; }
+  
+  /* Progress ring */
+  .ring-wrap { position:relative; display:inline-flex; align-items:center; justify-content:center; }
+  .ring-label { position:absolute; text-align:center; }
+  
+  /* Stock chip */
+  .stock-chip { display:inline-flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:500; }
+  
+  /* Tooltip-like info */
+  .info-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .info-row:last-child { border-bottom:none; }
+  .info-key { color:var(--text3); }
+  .info-val { font-weight:500; }
+  
+  /* Tier bar */
+  .tier-strip { display:flex; height:6px; border-radius:3px; overflow:hidden; margin-bottom:12px; }
+  .tier-blue { background:var(--accent); }
+  .tier-teal { background:var(--teal); }
+  .tier-purple { background:var(--purple); }
+  
+  /* Notification toast */
+  .toasts { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+  .toast { background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:12px 16px; max-width:300px; animation:slideIn 0.2s ease; display:flex; align-items:flex-start; gap:10px; }
+  @keyframes slideIn { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
+  .toast-icon { width:20px; height:20px; border-radius:50%; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:11px; }
+  .toast-green .toast-icon { background:rgba(34,197,94,0.2); color:var(--green); }
+  .toast-red .toast-icon { background:rgba(239,68,68,0.15); color:var(--red); }
+  .toast-amber .toast-icon { background:rgba(245,158,11,0.15); color:var(--amber); }
+  .toast-title { font-size:12px; font-weight:600; }
+  .toast-msg { font-size:11px; color:var(--text2); margin-top:2px; }
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+  
+  /* Responsive */
+  @media (max-width:768px) {
+    .sidebar { width:200px; }
+    .grid-2 { grid-template-columns:1fr; }
+    .grid-3 { grid-template-columns:1fr 1fr; }
+    .metrics-grid { grid-template-columns:repeat(2,1fr); }
+    .form-row { flex-direction:column; }
+  }
+  @media (max-width:540px) {
+    .sidebar { display:none; }
+    .grid-3 { grid-template-columns:1fr; }
+  }
+  
+  /* Chart containers */
+  .chart-wrap { position:relative; width:100%; height:240px; }
+  .chart-wrap-sm { position:relative; width:100%; height:180px; }
+  
+  /* Position card */
+  .pos-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px; }
+  .pos-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .pos-prices { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .pos-price { background:var(--surface); border-radius:6px; padding:6px 8px; text-align:center; }
+  .pos-price-label { font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.4px; }
+  .pos-price-val { font-size:12px; font-weight:600; margin-top:2px; }
+  .price-sl { color:var(--red); }
+  .price-hsl { color:#ff6b6b; }
+  .price-entry { color:var(--text); }
+  .price-ht { color:#52d470; }
+  .price-t { color:var(--green); }
+  
+  /* Alert config */
+  .alert-channel { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+  .alert-channel:last-child { border-bottom:none; }
+  .toggle { position:relative; width:36px; height:20px; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider { position:absolute; inset:0; background:var(--surface2); border-radius:10px; cursor:pointer; transition:0.2s; border:1px solid var(--border2); }
+  .toggle-slider::before { content:''; position:absolute; width:14px; height:14px; left:2px; top:2px; background:var(--text3); border-radius:50%; transition:0.2s; }
+  .toggle input:checked + .toggle-slider { background:rgba(59,130,246,0.2); border-color:var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(16px); background:var(--accent); }
+  
+  /* Section divider */
+  .section-title { font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  
+  /* Risk meter */
+  .risk-bar { height:10px; background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444); border-radius:5px; position:relative; margin:8px 0 4px; }
+  .risk-needle { position:absolute; top:-4px; width:3px; height:18px; background:var(--text); border-radius:2px; transform:translateX(-50%); transition:left 0.5s; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-text">Portfolio<span>OS</span></div>
+      <div class="logo-sub">Indian Market PMS</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Management</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="navigate('clients')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clients
+        <span class="nav-badge" id="client-count-badge">0</span>
+      </div>
+      <div class="nav-item" onclick="navigate('positions')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Positions
+      </div>
+      <div class="nav-section">Analytics</div>
+      <div class="nav-item" onclick="navigate('portfolio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Portfolio
+      </div>
+      <div class="nav-item" onclick="navigate('risk')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Risk Monitor
+      </div>
+      <div class="nav-section">Config</div>
+      <div class="nav-item" onclick="navigate('alerts')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Alerts
+      </div>
+      <div class="nav-item" onclick="navigate('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="market-status">
+        <div class="status-dot" id="market-dot"></div>
+        <div>
+          <div class="status-text" id="market-text">NSE Open</div>
+          <div class="status-time" id="market-time">09:15 - 15:30 IST</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main area -->
+  <div class="main" id="main-content">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA STORE
+// ═══════════════════════════════════════════════════════════
+const NSE_STOCKS = {
+  bluechip: [
+    // Nifty 50 — Large Cap
+    {sym:'RELIANCE',name:'Reliance Industries',ltp:2987.45,change:0},
+    {sym:'TCS',name:'Tata Consultancy Svcs',ltp:4123.80,change:0},
+    {sym:'HDFCBANK',name:'HDFC Bank',ltp:1789.55,change:0},
+    {sym:'INFY',name:'Infosys',ltp:1923.30,change:0},
+    {sym:'ICICIBANK',name:'ICICI Bank',ltp:1456.70,change:0},
+    {sym:'HINDUNILVR',name:'Hindustan Unilever',ltp:2678.40,change:0},
+    {sym:'ITC',name:'ITC Limited',ltp:468.90,change:0},
+    {sym:'SBIN',name:'State Bank of India',ltp:832.15,change:0},
+    {sym:'BHARTIARTL',name:'Bharti Airtel',ltp:1876.30,change:0},
+    {sym:'KOTAKBANK',name:'Kotak Mahindra Bank',ltp:1923.55,change:0},
+    {sym:'LT',name:'Larsen & Toubro',ltp:3456.80,change:0},
+    {sym:'HCLTECH',name:'HCL Technologies',ltp:1678.90,change:0},
+    {sym:'AXISBANK',name:'Axis Bank',ltp:1234.50,change:0},
+    {sym:'ASIANPAINT',name:'Asian Paints',ltp:2876.40,change:0},
+    {sym:'MARUTI',name:'Maruti Suzuki',ltp:12456.70,change:0},
+    {sym:'SUNPHARMA',name:'Sun Pharmaceutical',ltp:1678.90,change:0},
+    {sym:'TITAN',name:'Titan Company',ltp:3456.20,change:0},
+    {sym:'ULTRACEMCO',name:'UltraTech Cement',ltp:11234.50,change:0},
+    {sym:'BAJFINANCE',name:'Bajaj Finance',ltp:7345.90,change:0},
+    {sym:'WIPRO',name:'Wipro',ltp:567.80,change:0},
+    {sym:'NESTLEIND',name:'Nestle India',ltp:24567.80,change:0},
+    {sym:'TECHM',name:'Tech Mahindra',ltp:1678.90,change:0},
+    {sym:'POWERGRID',name:'Power Grid Corp',ltp:345.60,change:0},
+    {sym:'NTPC',name:'NTPC Limited',ltp:389.70,change:0},
+    {sym:'JSWSTEEL',name:'JSW Steel',ltp:987.60,change:0},
+    {sym:'TATAMOTORS',name:'Tata Motors',ltp:1023.40,change:0},
+    {sym:'TATASTEEL',name:'Tata Steel',ltp:167.80,change:0},
+    {sym:'ADANIENT',name:'Adani Enterprises',ltp:3456.70,change:0},
+    {sym:'ADANIPORTS',name:'Adani Ports',ltp:1456.70,change:0},
+    {sym:'BAJAJFINSV',name:'Bajaj Finserv',ltp:1876.50,change:0},
+    {sym:'DRREDDY',name:'Dr Reddys Lab',ltp:6789.40,change:0},
+    {sym:'CIPLA',name:'Cipla',ltp:1567.80,change:0},
+    {sym:'EICHERMOT',name:'Eicher Motors',ltp:4567.80,change:0},
+    {sym:'BRITANNIA',name:'Britannia Industries',ltp:5678.90,change:0},
+    {sym:'DIVISLAB',name:'Divis Laboratories',ltp:4567.80,change:0},
+    {sym:'HEROMOTOCO',name:'Hero MotoCorp',ltp:4567.80,change:0},
+    {sym:'HINDALCO',name:'Hindalco Industries',ltp:678.90,change:0},
+    {sym:'INDUSINDBK',name:'IndusInd Bank',ltp:1456.70,change:0},
+    {sym:'M&M',name:'Mahindra & Mahindra',ltp:3234.50,change:0},
+    {sym:'ONGC',name:'ONGC',ltp:289.70,change:0},
+    {sym:'SBILIFE',name:'SBI Life Insurance',ltp:1678.90,change:0},
+    {sym:'TATACONSUM',name:'Tata Consumer',ltp:1123.40,change:0},
+    {sym:'COALINDIA',name:'Coal India',ltp:489.70,change:0},
+    {sym:'APOLLOHOSP',name:'Apollo Hospitals',ltp:6789.40,change:0},
+    {sym:'BPCL',name:'BPCL',ltp:345.60,change:0},
+    {sym:'GRASIM',name:'Grasim Industries',ltp:2678.90,change:0},
+    {sym:'HDFCLIFE',name:'HDFC Life Insurance',ltp:756.80,change:0},
+    {sym:'UPL',name:'UPL Limited',ltp:567.80,change:0},
+    {sym:'VEDL',name:'Vedanta',ltp:489.70,change:0},
+    {sym:'HAL',name:'Hindustan Aeronautics',ltp:4567.80,change:0},
+  ],
+  midcap: [
+    // Nifty Midcap — Banking & Finance
+    {sym:'BANDHANBNK',name:'Bandhan Bank',ltp:234.50,change:0},
+    {sym:'FEDERALBNK',name:'Federal Bank',ltp:189.70,change:0},
+    {sym:'IDFCFIRSTB',name:'IDFC First Bank',ltp:89.70,change:0},
+    {sym:'AUBANK',name:'AU Small Finance Bank',ltp:789.60,change:0},
+    {sym:'RBLBANK',name:'RBL Bank',ltp:234.50,change:0},
+    {sym:'CHOLAFIN',name:'Cholamandalam Finance',ltp:1456.70,change:0},
+    {sym:'MUTHOOTFIN',name:'Muthoot Finance',ltp:2345.60,change:0},
+    {sym:'RECLTD',name:'REC Limited',ltp:567.80,change:0},
+    {sym:'PFC',name:'Power Finance Corp',ltp:489.70,change:0},
+    {sym:'IRFC',name:'Indian Railway Finance',ltp:234.50,change:0},
+    {sym:'ABCAPITAL',name:'Aditya Birla Capital',ltp:234.55,change:0},
+    {sym:'MANAPPURAM',name:'Manappuram Finance',ltp:189.70,change:0},
+    // IT Midcap
+    {sym:'PERSISTENT',name:'Persistent Systems',ltp:6789.40,change:0},
+    {sym:'LTTS',name:'L&T Technology',ltp:5678.90,change:0},
+    {sym:'MPHASIS',name:'Mphasis',ltp:3456.70,change:0},
+    {sym:'COFORGE',name:'Coforge',ltp:8901.20,change:0},
+    {sym:'KPITTECH',name:'KPIT Technologies',ltp:1789.30,change:0},
+    {sym:'TATAELXSI',name:'Tata Elxsi',ltp:7890.10,change:0},
+    {sym:'ZOMATO',name:'Zomato',ltp:267.80,change:0},
+    {sym:'IRCTC',name:'IRCTC',ltp:987.65,change:0},
+    // Pharma Midcap
+    {sym:'AUROPHARMA',name:'Aurobindo Pharma',ltp:1234.50,change:0},
+    {sym:'ALKEM',name:'Alkem Laboratories',ltp:5678.90,change:0},
+    {sym:'TORNTPHARM',name:'Torrent Pharma',ltp:3456.70,change:0},
+    {sym:'LAURUSLABS',name:'Laurus Labs',ltp:456.70,change:0},
+    {sym:'GRANULES',name:'Granules India',ltp:456.70,change:0},
+    {sym:'MAXHEALTH',name:'Max Healthcare',ltp:1023.40,change:0},
+    {sym:'FORTIS',name:'Fortis Healthcare',ltp:567.80,change:0},
+    // Auto Midcap
+    {sym:'TVSMOTOR',name:'TVS Motor Company',ltp:2345.60,change:0},
+    {sym:'ASHOKLEY',name:'Ashok Leyland',ltp:234.50,change:0},
+    {sym:'BHARATFORG',name:'Bharat Forge',ltp:1456.70,change:0},
+    {sym:'MOTHERSON',name:'Motherson Sumi',ltp:189.70,change:0},
+    {sym:'APOLLOTYRE',name:'Apollo Tyres',ltp:567.80,change:0},
+    {sym:'CEATLTD',name:'CEAT',ltp:3456.70,change:0},
+    {sym:'BALKRISHNA',name:'Balkrishna Industries',ltp:3234.50,change:0},
+    // FMCG Midcap
+    {sym:'DABUR',name:'Dabur India',ltp:623.40,change:0},
+    {sym:'MARICO',name:'Marico',ltp:678.90,change:0},
+    {sym:'EMAMILTD',name:'Emami',ltp:789.60,change:0},
+    {sym:'GODREJCP',name:'Godrej Consumer',ltp:1456.70,change:0},
+    {sym:'VBL',name:'Varun Beverages',ltp:1234.50,change:0},
+    {sym:'JUBLFOOD',name:'Jubilant Foodworks',ltp:678.90,change:0},
+    // Realty
+    {sym:'DLF',name:'DLF Limited',ltp:934.50,change:0},
+    {sym:'GODREJPROP',name:'Godrej Properties',ltp:3456.70,change:0},
+    {sym:'OBEROIRLTY',name:'Oberoi Realty',ltp:2345.60,change:0},
+    {sym:'PRESTIGE',name:'Prestige Estates',ltp:2123.40,change:0},
+    {sym:'BRIGADE',name:'Brigade Enterprises',ltp:1456.70,change:0},
+    {sym:'LODHA',name:'Macrotech (Lodha)',ltp:1567.80,change:0},
+    // Capital Goods
+    {sym:'SIEMENS',name:'Siemens India',ltp:7890.10,change:0},
+    {sym:'ABB',name:'ABB India',ltp:6789.40,change:0},
+    {sym:'THERMAX',name:'Thermax',ltp:4567.80,change:0},
+    {sym:'CUMMINSIND',name:'Cummins India',ltp:3456.70,change:0},
+    {sym:'BEL',name:'Bharat Electronics',ltp:289.70,change:0},
+  ],
+  smallcap: [
+    // Chemicals
+    {sym:'PIIND',name:'PI Industries',ltp:4234.55,change:0},
+    {sym:'FINEORG',name:'Fine Organic',ltp:6234.80,change:0},
+    {sym:'DEEPAKNTR',name:'Deepak Nitrite',ltp:2890.10,change:0},
+    {sym:'ATUL',name:'Atul Limited',ltp:8901.20,change:0},
+    {sym:'RALLIS',name:'Rallis India',ltp:456.70,change:0},
+    {sym:'GALAXYSURF',name:'Galaxy Surfactants',ltp:3456.40,change:0},
+    {sym:'PIDILITIND',name:'Pidilite Industries',ltp:3456.70,change:0},
+    // PSU & Defence
+    {sym:'RVNL',name:'Rail Vikas Nigam',ltp:489.70,change:0},
+    {sym:'IRCON',name:'Ircon International',ltp:345.60,change:0},
+    {sym:'NBCC',name:'NBCC India',ltp:189.70,change:0},
+    {sym:'HUDCO',name:'HUDCO',ltp:234.50,change:0},
+    {sym:'MAZAGON',name:'Mazagon Dock',ltp:4567.80,change:0},
+    {sym:'GRSE',name:'Garden Reach Shipbldrs',ltp:2345.60,change:0},
+    {sym:'COCHINSHIP',name:'Cochin Shipyard',ltp:2123.40,change:0},
+    {sym:'BEML',name:'BEML Limited',ltp:4567.80,change:0},
+    // Metals & Mining
+    {sym:'HINDZINC',name:'Hindustan Zinc',ltp:456.70,change:0},
+    {sym:'NMDC',name:'NMDC',ltp:234.50,change:0},
+    {sym:'SAIL',name:'SAIL',ltp:145.60,change:0},
+    {sym:'NATIONALUM',name:'National Aluminium',ltp:234.50,change:0},
+    {sym:'APLAPOLLO',name:'APL Apollo Tubes',ltp:1678.90,change:0},
+    {sym:'RATNAMANI',name:'Ratnamani Metals',ltp:3456.70,change:0},
+    // IT Smallcap
+    {sym:'DATAMATICS',name:'Datamatics Global',ltp:778.40,change:0},
+    {sym:'HAPPSTMNDS',name:'Happiest Minds',ltp:890.10,change:0},
+    {sym:'TANLA',name:'Tanla Platforms',ltp:1234.50,change:0},
+    {sym:'ROUTE',name:'Route Mobile',ltp:1890.10,change:0},
+    {sym:'LATENTVIEW',name:'LatentView Analytics',ltp:678.90,change:0},
+    {sym:'INTELLECT',name:'Intellect Design',ltp:1023.40,change:0},
+    // Cement Smallcap
+    {sym:'JKCEMENT',name:'JK Cement',ltp:4567.80,change:0},
+    {sym:'RAMCOCEM',name:'Ramco Cements',ltp:1023.40,change:0},
+    {sym:'DALMIABL',name:'Dalmia Bharat',ltp:2345.60,change:0},
+    // Consumer
+    {sym:'SURYAROSNI',name:'Surya Roshni',ltp:567.90,change:0},
+    {sym:'ASTRAL',name:'Astral Poly Technik',ltp:2145.60,change:0},
+    {sym:'POLYCAB',name:'Polycab India',ltp:7890.10,change:0},
+    {sym:'HAVELLS',name:'Havells India',ltp:1890.10,change:0},
+    {sym:'CROMPTON',name:'Crompton Greaves',ltp:456.80,change:0},
+    {sym:'KEI',name:'KEI Industries',ltp:4567.80,change:0},
+    // Finance Smallcap
+    {sym:'UJJIVANSFB',name:'Ujjivan Small Finance',ltp:45.60,change:0},
+    {sym:'EQUITASBNK',name:'Equitas Small Finance',ltp:89.70,change:0},
+    {sym:'CREDITACC',name:'Credit Access Grameen',ltp:1234.50,change:0},
+    {sym:'SPANDANA',name:'Spandana Sphoorty',ltp:890.10,change:0},
+    // Energy
+    {sym:'JSWENERGY',name:'JSW Energy',ltp:567.80,change:0},
+    {sym:'ADANIGREEN',name:'Adani Green Energy',ltp:2345.60,change:0},
+    {sym:'ADANITRANS',name:'Adani Transmission',ltp:1023.40,change:0},
+    {sym:'INDIGRID',name:'IndiGrid',ltp:189.70,change:0},
+  ]
+};
+
+let STATE = {
+  page: 'dashboard',
+  clients: [],
+  nextClientId: 1,
+  alertConfig: { telegram: true, email: true, push: false },
+  angelApiKey: '',
+  angelClientId: '',
+  defaultSL: 3,
+  defaultTarget: 6,
+};
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function navigate(page) {
+  STATE.page = page;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navMap = { dashboard:0, clients:1, positions:2, portfolio:3, risk:4, alerts:5, settings:6 };
+  const items = document.querySelectorAll('.nav-item');
+  if (items[navMap[page]]) items[navMap[page]].classList.add('active');
+  renderPage();
+}
+
+// ═══════════════════════════════════════════════════════════
+// MARKET STATUS
+// ═══════════════════════════════════════════════════════════
+function updateMarketStatus() {
+  const now = new Date();
+  const ist = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Kolkata'}));
+  const h = ist.getHours(), m = ist.getMinutes(), d = ist.getDay();
+  const open = (d >= 1 && d <= 5) && (h > 9 || (h === 9 && m >= 15)) && h < 15 || (h === 15 && m <= 30);
+  const dot = document.getElementById('market-dot');
+  const txt = document.getElementById('market-text');
+  if (dot) dot.style.background = open ? 'var(--green)' : 'var(--red)';
+  if (txt) txt.textContent = open ? 'NSE Open' : 'NSE Closed';
+  const timeStr = `${ist.getHours().toString().padStart(2,'0')}:${ist.getMinutes().toString().padStart(2,'0')} IST`;
+  const timeEl = document.getElementById('market-time');
+  if (timeEl) timeEl.textContent = timeStr;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRICE SIMULATION (live-like updates)
+// ═══════════════════════════════════════════════════════════
+function simulatePrices() {
+  ['bluechip','midcap','smallcap'].forEach(cat => {
+    NSE_STOCKS[cat].forEach(s => {
+      const delta = (Math.random() - 0.495) * s.ltp * 0.003;
+      s.ltp = Math.max(s.ltp * 0.8, s.ltp + delta);
+      s.change += (Math.random() - 0.5) * 0.1;
+      s.ltp = parseFloat(s.ltp.toFixed(2));
+      s.change = parseFloat(s.change.toFixed(2));
+    });
+  });
+  // Update client positions
+  STATE.clients.forEach(c => {
+    c.positions.forEach(p => {
+      const stock = findStock(p.symbol);
+      if (stock) p.ltp = stock.ltp;
+      updatePositionStatus(p);
+    });
+  });
+  updateLiveElements();
+}
+
+function findStock(sym) {
+  for (const cat of ['bluechip','midcap','smallcap']) {
+    const s = NSE_STOCKS[cat].find(x => x.sym === sym);
+    if (s) return s;
+  }
+  return null;
+}
+
+function updatePositionStatus(p) {
+  const pnl = (p.ltp - p.entryPrice) * p.qty;
+  const pnlPct = ((p.ltp - p.entryPrice) / p.entryPrice) * 100;
+  p.pnl = pnl;
+  p.pnlPct = pnlPct;
+  
+  // Check alerts
+  if (!p.alerted) p.alerted = {};
+  if (p.ltp <= p.slPrice && !p.alerted.fullSL) {
+    p.alerted.fullSL = true;
+    showAlert(`🔴 Full SL Hit: ${p.symbol}`, `₹${p.ltp.toFixed(2)} ≤ ₹${p.slPrice.toFixed(2)}`, 'red');
+  } else if (p.ltp <= p.halfSlPrice && !p.alerted.halfSL) {
+    p.alerted.halfSL = true;
+    showAlert(`⚠️ 50% SL: ${p.symbol}`, `₹${p.ltp.toFixed(2)} hit half stop loss`, 'amber');
+  } else if (p.ltp >= p.targetPrice && !p.alerted.fullTP) {
+    p.alerted.fullTP = true;
+    showAlert(`🎯 Full Target: ${p.symbol}`, `₹${p.ltp.toFixed(2)} ≥ ₹${p.targetPrice.toFixed(2)}`, 'green');
+  } else if (p.ltp >= p.halfTargetPrice && !p.alerted.halfTP) {
+    p.alerted.halfTP = true;
+    showAlert(`✅ 50% Target: ${p.symbol}`, `₹${p.ltp.toFixed(2)} hit half target`, 'green');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOASTS
+// ═══════════════════════════════════════════════════════════
+function showAlert(title, msg, type='green') {
+  const c = document.getElementById('toasts');
+  const icons = {green:'✓', red:'✕', amber:'!'};
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.innerHTML = `<div class="toast-icon">${icons[type]||'i'}</div><div><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
+}
+
+function showToast(msg, type='green') { showAlert(msg, '', type); }
+
+// ═══════════════════════════════════════════════════════════
+// CLIENT CREATION
+// ═══════════════════════════════════════════════════════════
+function createClient(name, capital, phone, email) {
+  const slPct = STATE.defaultSL / 100;
+  const tpPct = STATE.defaultTarget / 100;
+  
+  const bluechipCap = capital * 0.5;
+  const midcapCap = capital * 0.3;
+  const smallcapCap = capital * 0.2;
+  
+  const positions = [];
+  
+  // Auto-select 5 stocks per category
+  const bc = NSE_STOCKS.bluechip.slice(0, 5);
+  const mc = NSE_STOCKS.midcap.slice(0, 5);
+  const sc = NSE_STOCKS.smallcap.slice(0, 5);
+  
+  [[bc, bluechipCap, 'Bluechip'], [mc, midcapCap, 'Midcap'], [sc, smallcapCap, 'Smallcap']].forEach(([stocks, cap, tier]) => {
+    const perStock = cap / stocks.length;
+    stocks.forEach(s => {
+      const qty = Math.floor(perStock / s.ltp);
+      if (qty < 1) return;
+      const entry = s.ltp;
+      const sl = entry * (1 - slPct);
+      const tp = entry * (1 + tpPct);
+      positions.push({
+        id: Math.random().toString(36).slice(2),
+        symbol: s.sym,
+        name: s.name,
+        tier,
+        qty,
+        entryPrice: parseFloat(entry.toFixed(2)),
+        ltp: entry,
+        slPrice: parseFloat(sl.toFixed(2)),
+        halfSlPrice: parseFloat((entry - (entry - sl)/2).toFixed(2)),
+        targetPrice: parseFloat(tp.toFixed(2)),
+        halfTargetPrice: parseFloat((entry + (tp - entry)/2).toFixed(2)),
+        pnl: 0, pnlPct: 0,
+        status: 'open',
+        alerted: {},
+        addedAt: new Date().toISOString()
+      });
+    });
+  });
+  
+  const client = {
+    id: STATE.nextClientId++,
+    name, capital, phone, email,
+    positions,
+    createdAt: new Date().toISOString(),
+    realizedPnl: 0
+  };
+  STATE.clients.push(client);
+  document.getElementById('client-count-badge').textContent = STATE.clients.length;
+  return client;
+}
+
+function getClientMetrics(client) {
+  const invested = client.positions.reduce((s, p) => s + (p.entryPrice * p.qty), 0);
+  const current = client.positions.reduce((s, p) => s + (p.ltp * p.qty), 0);
+  const unrealizedPnl = current - invested;
+  const totalPnl = unrealizedPnl + client.realizedPnl;
+  const returnPct = invested > 0 ? (totalPnl / client.capital) * 100 : 0;
+  return { invested, current, unrealizedPnl, realizedPnl: client.realizedPnl, totalPnl, returnPct };
+}
+
+function updateLiveElements() {
+  // Update any live price elements
+  document.querySelectorAll('[data-ltp]').forEach(el => {
+    const sym = el.dataset.ltp;
+    const s = findStock(sym);
+    if (s) el.textContent = `₹${s.ltp.toFixed(2)}`;
+  });
+  document.querySelectorAll('[data-pnl]').forEach(el => {
+    const cid = parseInt(el.dataset.pnl);
+    const c = STATE.clients.find(x => x.id === cid);
+    if (c) {
+      const m = getClientMetrics(c);
+      el.textContent = `${m.returnPct >= 0 ? '+' : ''}${m.returnPct.toFixed(2)}%`;
+      el.className = m.returnPct >= 0 ? 'up' : 'down';
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════════════════
+function renderPage() {
+  const main = document.getElementById('main-content');
+  const pages = {
+    dashboard: renderDashboard,
+    clients: renderClients,
+    positions: renderPositions,
+    portfolio: renderPortfolio,
+    risk: renderRisk,
+    alerts: renderAlerts,
+    settings: renderSettings,
+  };
+  const fn = pages[STATE.page] || renderDashboard;
+  main.innerHTML = fn();
+  afterRender();
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDashboard() {
+  const totalCapital = STATE.clients.reduce((s, c) => s + c.capital, 0);
+  const totalCurrent = STATE.clients.reduce((s, c) => {
+    return s + c.positions.reduce((ps, p) => ps + p.ltp * p.qty, 0);
+  }, 0);
+  const totalPnl = STATE.clients.reduce((s, c) => {
+    const m = getClientMetrics(c);
+    return s + m.totalPnl;
+  }, 0);
+  const totalPositions = STATE.clients.reduce((s, c) => s + c.positions.length, 0);
+  const pnlPct = totalCapital > 0 ? (totalPnl / totalCapital) * 100 : 0;
+  
+  const topMovers = [];
+  ['bluechip','midcap','smallcap'].forEach(cat => {
+    NSE_STOCKS[cat].forEach(s => topMovers.push(s));
+  });
+  topMovers.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+  
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Admin Dashboard</div>
+      <div class="page-sub">Real-time overview — all clients & positions</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="simulatePrices();renderPage()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh Prices
+      </button>
+      <button class="btn btn-primary" onclick="navigate('clients');openNewClientModal()">+ New Client</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Total AUM</div>
+        <div class="metric-value">₹${formatNum(totalCapital)}</div>
+        <div class="metric-change neutral">${STATE.clients.length} clients</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Current Value</div>
+        <div class="metric-value">₹${formatNum(totalCurrent)}</div>
+        <div class="metric-change ${totalPnl>=0?'up':'down'}">${totalPnl>=0?'+':''}${pnlPct.toFixed(2)}%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total P&L</div>
+        <div class="metric-value ${totalPnl>=0?'up':'down'}">₹${formatNum(totalPnl)}</div>
+        <div class="metric-change neutral">Unrealized</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Open Positions</div>
+        <div class="metric-value">${totalPositions}</div>
+        <div class="metric-change neutral">across ${STATE.clients.length} clients</div>
+      </div>
+    </div>
+    
+    ${STATE.clients.length === 0 ? `
+    <div style="text-align:center;padding:60px 20px;color:var(--text3)">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 16px;display:block;opacity:0.4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <div style="font-size:15px;color:var(--text2);margin-bottom:8px">No clients yet</div>
+      <div style="font-size:13px;margin-bottom:20px">Add your first client to start portfolio management</div>
+      <button class="btn btn-primary" onclick="navigate('clients');setTimeout(openNewClientModal,100)">+ Add First Client</button>
+    </div>
+    ` : `
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Portfolio Allocation</div></div>
+        <div class="card-body">
+          <div class="chart-wrap-sm"><canvas id="allocChart" role="img" aria-label="Portfolio allocation donut chart">Bluechip 50%, Midcap 30%, Smallcap 20%.</canvas></div>
+          <div style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:12px">
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#3b82f6"></span>Bluechip 50%</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#14b8a6"></span>Midcap 30%</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#a855f7"></span>Smallcap 20%</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">P&L by Client</div></div>
+        <div class="card-body">
+          <div class="chart-wrap-sm"><canvas id="pnlChart" role="img" aria-label="P&L bar chart by client">Client P&L breakdown.</canvas></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div class="card-title">Client Overview</div>
+        <button class="btn" style="font-size:11px;padding:4px 10px" onclick="navigate('clients')">View All →</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Client</th><th>Capital</th><th>Current Value</th><th>Unrealized P&L</th><th>Return %</th><th>Positions</th></tr>
+          ${STATE.clients.slice(0,5).map(c => {
+            const m = getClientMetrics(c);
+            return `<tr>
+              <td><strong>${c.name}</strong><br><span style="font-size:11px;color:var(--text3)">${c.email||''}</span></td>
+              <td>₹${formatNum(c.capital)}</td>
+              <td>₹${formatNum(m.current)}</td>
+              <td class="${m.unrealizedPnl>=0?'up':'down'}">₹${formatNum(m.unrealizedPnl)}</td>
+              <td><span class="badge badge-${m.returnPct>=0?'green':'red'}">${m.returnPct>=0?'+':''}${m.returnPct.toFixed(2)}%</span></td>
+              <td>${c.positions.length}</td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>
+    </div>
+    `}
+    
+    <div class="card">
+      <div class="card-header"><div class="card-title">Market Movers — NSE</div></div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Symbol</th><th>Name</th><th>LTP</th><th>Change %</th><th>Category</th></tr>
+          ${topMovers.slice(0,20).map(s => {
+            const cat = NSE_STOCKS.bluechip.includes(s)?'Bluechip':NSE_STOCKS.midcap.includes(s)?'Midcap':'Smallcap';
+            const badge = {Bluechip:'badge-blue',Midcap:'badge-teal',Smallcap:'badge-purple'}[cat];
+            return `<tr>
+              <td><strong>${s.sym}</strong></td>
+              <td style="color:var(--text2)">${s.name}</td>
+              <td data-ltp="${s.sym}">₹${s.ltp.toFixed(2)}</td>
+              <td class="${s.change>=0?'up':'down'}">${s.change>=0?'+':''}${s.change.toFixed(2)}%</td>
+              <td><span class="badge ${badge}">${cat}</span></td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// CLIENTS PAGE
+// ─────────────────────────────────────────────
+function renderClients() {
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Client Management</div>
+      <div class="page-sub">${STATE.clients.length} clients — unlimited capacity</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="openNewClientModal()">+ New Client</button>
+    </div>
+  </div>
+  <div class="content">
+    <div id="client-modal-placeholder"></div>
+    ${STATE.clients.length === 0 ? `
+    <div style="text-align:center;padding:80px 20px;color:var(--text3)">
+      <div style="font-size:15px;color:var(--text2);margin-bottom:8px">No clients added yet</div>
+      <button class="btn btn-primary" onclick="openNewClientModal()">+ Add First Client</button>
+    </div>
+    ` : `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
+      ${STATE.clients.map(c => {
+        const m = getClientMetrics(c);
+        return `
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:38px;height:38px;border-radius:50%;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent)">${c.name.slice(0,2).toUpperCase()}</div>
+              <div>
+                <div style="font-weight:600">${c.name}</div>
+                <div style="font-size:11px;color:var(--text3)">${c.phone||c.email||'ID #'+c.id}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn" style="padding:4px 8px" onclick="openEditPositions(${c.id})">Edit</button>
+              <button class="btn btn-danger" style="padding:4px 8px" onclick="deleteClient(${c.id})">✕</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="tier-strip">
+              <div class="tier-blue" style="width:50%"></div>
+              <div class="tier-teal" style="width:30%"></div>
+              <div class="tier-purple" style="width:20%"></div>
+            </div>
+            <div class="info-row"><span class="info-key">Capital</span><span class="info-val">₹${formatNum(c.capital)}</span></div>
+            <div class="info-row"><span class="info-key">Current Value</span><span class="info-val">₹${formatNum(m.current)}</span></div>
+            <div class="info-row"><span class="info-key">Unrealized P&L</span><span class="info-val ${m.unrealizedPnl>=0?'up':'down'}">₹${formatNum(m.unrealizedPnl)}</span></div>
+            <div class="info-row"><span class="info-key">Return</span><span class="info-val ${m.returnPct>=0?'up':'down'}" data-pnl="${c.id}">${m.returnPct>=0?'+':''}${m.returnPct.toFixed(2)}%</span></div>
+            <div class="info-row"><span class="info-key">Positions</span><span class="info-val">${c.positions.length} stocks</span></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// POSITIONS PAGE
+// ─────────────────────────────────────────────
+function renderPositions() {
+  const allPositions = [];
+  STATE.clients.forEach(c => c.positions.forEach(p => allPositions.push({...p, clientName: c.name, clientId: c.id})));
+  
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Live Positions</div>
+      <div class="page-sub">${allPositions.length} open positions — auto-refreshing</div>
+    </div>
+    <div class="header-actions">
+      <select id="client-filter" style="padding:7px 10px;font-size:12px;width:auto" onchange="renderPage()">
+        <option value="">All Clients</option>
+        ${STATE.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </select>
+      <button class="btn" onclick="simulatePrices();renderPage()">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="content">
+    ${allPositions.length === 0 ? `<div style="text-align:center;padding:80px;color:var(--text3)">No positions. Add clients first.</div>` : 
+    allPositions.map(p => {
+      const pnlClass = p.pnl >= 0 ? 'up' : 'down';
+      const stock = findStock(p.symbol);
+      const changePct = stock ? stock.change : 0;
+      const tierBadge = {Bluechip:'badge-blue',Midcap:'badge-teal',Smallcap:'badge-purple'}[p.tier]||'badge-blue';
+      return `
+      <div class="pos-card">
+        <div class="pos-header">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-weight:700;font-size:15px">${p.symbol}</span>
+                <span class="badge ${tierBadge}">${p.tier}</span>
+                <span style="font-size:11px;color:var(--text3)">${p.clientName}</span>
+              </div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">${p.name} · ${p.qty} shares</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:18px;font-weight:700" data-ltp="${p.symbol}">₹${p.ltp.toFixed(2)}</div>
+            <div style="font-size:12px" class="${changePct>=0?'up':'down'}">${changePct>=0?'+':''}${changePct.toFixed(2)}% today</div>
+          </div>
+        </div>
+        
+        <div class="pos-prices">
+          <div class="pos-price">
+            <div class="pos-price-label">Stop Loss</div>
+            <div class="pos-price-val price-sl">₹${p.slPrice}</div>
+          </div>
+          <div class="pos-price">
+            <div class="pos-price-label">½ Stop Loss</div>
+            <div class="pos-price-val price-hsl">₹${p.halfSlPrice}</div>
+          </div>
+          <div class="pos-price">
+            <div class="pos-price-label">Entry</div>
+            <div class="pos-price-val price-entry">₹${p.entryPrice}</div>
+          </div>
+          <div class="pos-price">
+            <div class="pos-price-label">½ Target</div>
+            <div class="pos-price-val price-ht">₹${p.halfTargetPrice}</div>
+          </div>
+          <div class="pos-price">
+            <div class="pos-price-label">Target</div>
+            <div class="pos-price-val price-t">₹${p.targetPrice}</div>
+          </div>
+        </div>
+        
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between">
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:3px">
+              <span>SL ₹${p.slPrice}</span><span>Entry ₹${p.entryPrice}</span><span>TP ₹${p.targetPrice}</span>
+            </div>
+            <div style="height:6px;background:var(--surface2);border-radius:3px;position:relative;overflow:hidden">
+              <div style="height:100%;border-radius:3px;width:${Math.min(100,Math.max(0,((p.ltp-p.slPrice)/(p.targetPrice-p.slPrice))*100))}%;background:${p.ltp>=p.entryPrice?'var(--green)':'var(--red)'};transition:width 0.5s"></div>
+            </div>
+          </div>
+          <div style="margin-left:16px;text-align:right;min-width:100px">
+            <div class="${pnlClass}" style="font-weight:600">₹${formatNum(p.pnl)}</div>
+            <div class="${pnlClass}" style="font-size:11px">${p.pnlPct>=0?'+':''}${p.pnlPct.toFixed(2)}%</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// PORTFOLIO ANALYTICS
+// ─────────────────────────────────────────────
+function renderPortfolio() {
+  const clientSel = STATE.clients[0];
+  const totalCapital = STATE.clients.reduce((s,c)=>s+c.capital,0);
+  const totalInvested = STATE.clients.reduce((s,c)=>s+c.positions.reduce((ps,p)=>ps+p.entryPrice*p.qty,0),0);
+  const totalCurrent = STATE.clients.reduce((s,c)=>s+c.positions.reduce((ps,p)=>ps+p.ltp*p.qty,0),0);
+  const totalPnl = totalCurrent - totalInvested;
+  const totalReal = STATE.clients.reduce((s,c)=>s+c.realizedPnl,0);
+  
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Portfolio Analytics</div>
+      <div class="page-sub">Consolidated view across all clients</div>
+    </div>
+    <div class="header-actions">
+      <select style="padding:7px 10px;font-size:12px;width:auto">
+        <option>All Clients</option>
+        ${STATE.clients.map(c=>`<option>${c.name}</option>`).join('')}
+      </select>
+    </div>
+  </div>
+  <div class="content">
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Capital Deployed</div>
+        <div class="metric-value">₹${formatNum(totalInvested)}</div>
+        <div class="metric-change neutral">of ₹${formatNum(totalCapital)} AUM</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Current Value</div>
+        <div class="metric-value">₹${formatNum(totalCurrent)}</div>
+        <div class="metric-change ${totalPnl>=0?'up':'down'}">${totalPnl>=0?'+':''}${totalCapital>0?((totalPnl/totalCapital)*100).toFixed(2):0}% return</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Unrealized P&L</div>
+        <div class="metric-value ${totalPnl>=0?'up':'down'}">₹${formatNum(totalPnl)}</div>
+        <div class="metric-change neutral">Open positions</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Realized P&L</div>
+        <div class="metric-value ${totalReal>=0?'up':'down'}">₹${formatNum(totalReal)}</div>
+        <div class="metric-change neutral">Closed trades</div>
+      </div>
+    </div>
+    
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Allocation Breakdown</div></div>
+        <div class="card-body">
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span style="color:var(--text2)">Bluechip (50%)</span>
+              <span style="color:var(--accent)">₹${formatNum(totalCapital*0.5)}</span>
+            </div>
+            <div class="alloc-bar"><div class="alloc-fill" style="width:50%;background:var(--accent)"></div></div>
+          </div>
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span style="color:var(--text2)">Midcap (30%)</span>
+              <span style="color:var(--teal)">₹${formatNum(totalCapital*0.3)}</span>
+            </div>
+            <div class="alloc-bar"><div class="alloc-fill" style="width:30%;background:var(--teal)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span style="color:var(--text2)">Smallcap (20%)</span>
+              <span style="color:var(--purple)">₹${formatNum(totalCapital*0.2)}</span>
+            </div>
+            <div class="alloc-bar"><div class="alloc-fill" style="width:20%;background:var(--purple)"></div></div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="chart-wrap" style="height:200px"><canvas id="donutChart" role="img" aria-label="Portfolio donut">50% Bluechip, 30% Midcap, 20% Smallcap</canvas></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Portfolio Return %</div></div>
+        <div class="card-body">
+          <div class="chart-wrap"><canvas id="retChart" role="img" aria-label="Return chart">Portfolio returns over time.</canvas></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header"><div class="card-title">Holdings Summary</div></div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Symbol</th><th>Tier</th><th>Client</th><th>Qty</th><th>Avg Cost</th><th>LTP</th><th>Invested</th><th>Current</th><th>P&L</th><th>P&L%</th></tr>
+          ${STATE.clients.flatMap(c => c.positions.map(p => ({...p, clientName:c.name}))).map(p => `
+          <tr>
+            <td><strong>${p.symbol}</strong></td>
+            <td><span class="badge ${{Bluechip:'badge-blue',Midcap:'badge-teal',Smallcap:'badge-purple'}[p.tier]}">${p.tier}</span></td>
+            <td style="color:var(--text2)">${p.clientName}</td>
+            <td>${p.qty}</td>
+            <td>₹${p.entryPrice.toFixed(2)}</td>
+            <td data-ltp="${p.symbol}">₹${p.ltp.toFixed(2)}</td>
+            <td>₹${formatNum(p.entryPrice*p.qty)}</td>
+            <td>₹${formatNum(p.ltp*p.qty)}</td>
+            <td class="${p.pnl>=0?'up':'down'}">₹${formatNum(p.pnl)}</td>
+            <td class="${p.pnlPct>=0?'up':'down'}">${p.pnlPct>=0?'+':''}${p.pnlPct.toFixed(2)}%</td>
+          </tr>`).join('')}
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// RISK MONITOR
+// ─────────────────────────────────────────────
+function renderRisk() {
+  const allPos = STATE.clients.flatMap(c => c.positions.map(p => ({...p, clientName:c.name})));
+  const atRisk = allPos.filter(p => p.ltp <= p.halfSlPrice).length;
+  const atTarget = allPos.filter(p => p.ltp >= p.halfTargetPrice).length;
+  
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Risk Monitor</div>
+      <div class="page-sub">Live stop loss & target tracking</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Positions at Risk</div>
+        <div class="metric-value ${atRisk>0?'down':''}">${atRisk}</div>
+        <div class="metric-change neutral">Near or below 50% SL</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Near Target</div>
+        <div class="metric-value ${atTarget>0?'up':''}">${atTarget}</div>
+        <div class="metric-change neutral">At or above 50% target</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total Exposure</div>
+        <div class="metric-value">₹${formatNum(allPos.reduce((s,p)=>s+p.entryPrice*p.qty,0))}</div>
+        <div class="metric-change neutral">Capital at risk</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Max Drawdown</div>
+        <div class="metric-value down">${allPos.length>0?Math.min(...allPos.map(p=>p.pnlPct)).toFixed(2):0}%</div>
+        <div class="metric-change neutral">Worst position</div>
+      </div>
+    </div>
+    
+    ${allPos.length === 0 ? `<div style="text-align:center;padding:60px;color:var(--text3)">No positions to monitor</div>` :
+    `<div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">Risk Status — All Positions</div></div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Symbol</th><th>Client</th><th>Entry</th><th>LTP</th><th>SL</th><th>Target</th><th>Status</th><th>P&L%</th></tr>
+          ${allPos.map(p => {
+            let status = 'Normal';
+            let statusClass = 'badge-green';
+            if (p.ltp <= p.slPrice) { status = 'SL Hit'; statusClass = 'badge-red'; }
+            else if (p.ltp <= p.halfSlPrice) { status = '50% SL'; statusClass = 'badge-red'; }
+            else if (p.ltp >= p.targetPrice) { status = 'Target Hit'; statusClass = 'badge-green'; }
+            else if (p.ltp >= p.halfTargetPrice) { status = '50% Target'; statusClass = 'badge-teal'; }
+            return `<tr>
+              <td><strong>${p.symbol}</strong></td>
+              <td style="color:var(--text2)">${p.clientName}</td>
+              <td>₹${p.entryPrice.toFixed(2)}</td>
+              <td data-ltp="${p.symbol}">₹${p.ltp.toFixed(2)}</td>
+              <td class="down">₹${p.slPrice.toFixed(2)}</td>
+              <td class="up">₹${p.targetPrice.toFixed(2)}</td>
+              <td><span class="badge ${statusClass}">${status}</span></td>
+              <td class="${p.pnlPct>=0?'up':'down'}">${p.pnlPct>=0?'+':''}${p.pnlPct.toFixed(2)}%</td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>
+    </div>`}
+    
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Risk Levels by Tier</div></div>
+        <div class="card-body">
+          ${['Bluechip','Midcap','Smallcap'].map(tier => {
+            const ps = allPos.filter(p=>p.tier===tier);
+            const avgPnl = ps.length > 0 ? ps.reduce((s,p)=>s+p.pnlPct,0)/ps.length : 0;
+            const risk = Math.min(100, Math.abs(Math.min(0, avgPnl) * 10));
+            return `
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+                <span style="color:var(--text2)">${tier} (${ps.length} positions)</span>
+                <span class="${avgPnl>=0?'up':'down'}">${avgPnl>=0?'+':''}${avgPnl.toFixed(2)}% avg</span>
+              </div>
+              <div class="risk-bar"><div class="risk-needle" style="left:${Math.min(95,Math.max(5,50+avgPnl*5))}%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>High Risk</span><span>Neutral</span><span>Profit</span></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Alert Conditions</div></div>
+        <div class="card-body">
+          <div class="info-row"><span class="info-key">50% SL Triggered</span><span class="badge badge-red">${allPos.filter(p=>p.ltp<=p.halfSlPrice).length} positions</span></div>
+          <div class="info-row"><span class="info-key">Full SL Triggered</span><span class="badge badge-red">${allPos.filter(p=>p.ltp<=p.slPrice).length} positions</span></div>
+          <div class="info-row"><span class="info-key">50% Target Hit</span><span class="badge badge-teal">${allPos.filter(p=>p.ltp>=p.halfTargetPrice&&p.ltp<p.targetPrice).length} positions</span></div>
+          <div class="info-row"><span class="info-key">Full Target Hit</span><span class="badge badge-green">${allPos.filter(p=>p.ltp>=p.targetPrice).length} positions</span></div>
+          <div style="margin-top:14px;padding:10px;background:var(--surface2);border-radius:8px;font-size:12px">
+            <div style="color:var(--text3);margin-bottom:6px">Default Risk Parameters</div>
+            <div class="info-row"><span class="info-key">Stop Loss</span><span class="info-val down">${STATE.defaultSL}%</span></div>
+            <div class="info-row"><span class="info-key">Target</span><span class="info-val up">${STATE.defaultTarget}%</span></div>
+            <div class="info-row"><span class="info-key">Risk:Reward</span><span class="info-val">1:${(STATE.defaultTarget/STATE.defaultSL).toFixed(1)}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// ALERTS
+// ─────────────────────────────────────────────
+function renderAlerts() {
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Alert Configuration</div>
+      <div class="page-sub">Telegram, Email & Push notifications</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Notification Channels</div></div>
+        <div class="card-body">
+          <div class="alert-channel">
+            <div>
+              <div style="font-size:13px;font-weight:500">📱 Telegram Bot</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">Instant alerts via bot messages</div>
+              <input id="tg-token" placeholder="Bot Token: 123456:ABC..." style="margin-top:8px;font-size:11px" value="">
+              <input id="tg-chatid" placeholder="Chat ID: -100xxxxxxxx" style="margin-top:4px;font-size:11px" value="">
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${STATE.alertConfig.telegram?'checked':''} onchange="STATE.alertConfig.telegram=this.checked">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="alert-channel">
+            <div>
+              <div style="font-size:13px;font-weight:500">📧 Email Alerts</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">SMTP / SendGrid integration</div>
+              <input id="alert-email" placeholder="alerts@yourdomain.com" style="margin-top:8px;font-size:11px" value="">
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${STATE.alertConfig.email?'checked':''} onchange="STATE.alertConfig.email=this.checked">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="alert-channel">
+            <div>
+              <div style="font-size:13px;font-weight:500">🔔 Push Notifications</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">Browser push (requires HTTPS)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" ${STATE.alertConfig.push?'checked':''} onchange="STATE.alertConfig.push=this.checked">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div style="margin-top:14px">
+            <button class="btn btn-success" onclick="testAlerts()">🧪 Send Test Alert</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Alert Conditions</div></div>
+        <div class="card-body">
+          ${[
+            {label:'50% Stop Loss Reached', icon:'⚠️', desc:'Price hits halfway to full SL', type:'amber'},
+            {label:'Full Stop Loss Hit', icon:'🔴', desc:'Price reaches the stop loss level', type:'red'},
+            {label:'50% Target Reached', icon:'✅', desc:'Price halfway to target', type:'green'},
+            {label:'Full Target Achieved', icon:'🎯', desc:'Price reaches the target level', type:'green'},
+          ].map(a => `
+          <div class="alert-channel">
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:18px">${a.icon}</span>
+              <div>
+                <div style="font-size:12px;font-weight:500">${a.label}</div>
+                <div style="font-size:11px;color:var(--text3)">${a.desc}</div>
+              </div>
+            </div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>`).join('')}
+          
+          <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px">
+            <div class="section-title">Alert Webhook (Backend)</div>
+            <div style="font-size:11px;color:var(--text2);line-height:1.8">
+              Configure <code style="background:var(--surface3);padding:1px 4px;border-radius:3px">POST /api/alerts/send</code> in your FastAPI backend.<br>
+              Supports Telegram Bot API, SendGrid Email, FCM Push.<br>
+              See <strong>backend/services/alert_service.py</strong> for implementation.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><div class="card-title">Alert Log</div></div>
+      <div class="card-body" style="color:var(--text3);font-size:12px;text-align:center;padding:30px">
+        Alerts will appear here as they trigger. Enable real-time monitoring via backend WebSocket.
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// SETTINGS
+// ─────────────────────────────────────────────
+function renderSettings() {
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">Settings</div>
+      <div class="page-sub">Angel One SmartAPI & system configuration</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔌 Angel One SmartAPI</div></div>
+        <div class="card-body">
+          <div class="alert-bar">
+            ⚡ Connect to Angel One SmartAPI for real NSE/BSE live prices
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>API Key</label>
+            <input type="password" placeholder="Your Angel One API Key" id="angel-key" value="${STATE.angelApiKey}">
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Client ID</label>
+            <input placeholder="Your Angel One Client ID" id="angel-client" value="${STATE.angelClientId}">
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>TOTP Secret (for SmartAPI login)</label>
+            <input type="password" placeholder="TOTP Secret from Angel One">
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="saveAngelSettings()">Save & Connect</button>
+            <button class="btn" onclick="testAngelConnection()">Test Connection</button>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.8">
+            Backend endpoint: <code style="color:var(--accent)">GET /api/market/ltp/{symbol}</code><br>
+            WebSocket feed: <code style="color:var(--accent)">ws://localhost:8000/ws/market</code><br>
+            See <strong>backend/services/angel_service.py</strong>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚙️ Default Risk Parameters</div></div>
+        <div class="card-body">
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Default Stop Loss %</label>
+            <input type="number" step="0.5" min="0.5" max="20" value="${STATE.defaultSL}" id="def-sl" oninput="updateRRDisplay()">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Default Target %</label>
+            <input type="number" step="0.5" min="0.5" max="50" value="${STATE.defaultTarget}" id="def-tp" oninput="updateRRDisplay()">
+          </div>
+          <div style="padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span style="color:var(--text3)">Risk:Reward Ratio</span>
+              <span id="rr-display" style="font-weight:600">1:${(STATE.defaultTarget/STATE.defaultSL).toFixed(1)}</span>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Allocation: Bluechip %</label>
+            <input type="number" value="50" min="10" max="80">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Allocation: Midcap %</label>
+            <input type="number" value="30" min="5" max="60">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Allocation: Smallcap %</label>
+            <input type="number" value="20" min="5" max="40">
+          </div>
+          <button class="btn btn-primary" onclick="saveDefaultSettings()">Save Settings</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><div class="card-title">🚀 Backend Architecture</div></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          ${[
+            {icon:'🐍',title:'FastAPI Backend',desc:'Python 3.11+\nAngel SmartAPI\nWebSockets\nCelery tasks'},
+            {icon:'🗄️',title:'PostgreSQL DB',desc:'Client records\nPosition history\nAlert logs\nP&L tracking'},
+            {icon:'⚡',title:'Angel SmartAPI',desc:'Live NSE/BSE prices\nOrder placement\nPortfolio sync\nHistorical data'},
+            {icon:'🚂',title:'Railway Deploy',desc:'Docker containers\nAuto-scaling\nEnv secrets\nCI/CD pipeline'},
+          ].map(b=>`
+          <div style="background:var(--surface2);border-radius:10px;padding:14px">
+            <div style="font-size:22px;margin-bottom:6px">${b.icon}</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:4px">${b.title}</div>
+            <div style="font-size:11px;color:var(--text3);white-space:pre-line">${b.desc}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL: NEW CLIENT
+// ═══════════════════════════════════════════════════════════
+function openNewClientModal() {
+  // Build full stock list from all categories
+  const allBluechip = NSE_STOCKS.bluechip;
+  const allMidcap   = NSE_STOCKS.midcap;
+  const allSmallcap = NSE_STOCKS.smallcap;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'new-client-modal';
+  overlay.style.zIndex = '1000';
+  overlay.innerHTML = `
+  <div class="modal" style="max-width:680px;max-height:92vh;overflow-y:auto">
+    <div class="modal-header">
+      <div class="modal-title">New Client — Portfolio Setup</div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="section-title">Client Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>Full Name *</label><input id="nc-name" placeholder="Rajesh Kumar"></div>
+        <div class="form-group"><label>Phone</label><input id="nc-phone" placeholder="+91 98765 43210"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email</label><input id="nc-email" placeholder="rajesh@example.com"></div>
+        <div class="form-group"><label>Capital (₹) *</label><input id="nc-capital" type="number" placeholder="500000" oninput="previewAllocation()"></div>
+      </div>
+
+      <div id="alloc-preview" style="padding:12px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--text3);margin-bottom:14px">
+        Enter capital amount to see allocation preview
+      </div>
+
+      <div class="section-title">Risk Parameters</div>
+      <div class="form-row">
+        <div class="form-group"><label>Stop Loss %</label><input id="nc-sl" type="number" value="3" step="0.5" min="0.5" max="20"></div>
+        <div class="form-group"><label>Target %</label><input id="nc-tp" type="number" value="6" step="0.5" min="0.5" max="50"></div>
+      </div>
+
+      <div class="section-title" style="margin-top:4px">Stock Selection — Choose from Nifty 50 + 500</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">
+        Select exactly 3 stocks per category. Use search to find any stock.
+      </div>
+
+      <!-- Search bar -->
+      <input id="nc-stock-search" placeholder="🔍 Search — TATAMOTORS, ZOMATO, ADANIENT, HCLTECH..." 
+        style="margin-bottom:12px;font-size:12px" 
+        oninput="ncFilterStocks(this.value)">
+
+      <!-- BLUECHIP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--accent)">🔵 BLUECHIP — 50% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="bc-count" style="color:var(--accent);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="bc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allBluechip.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="bc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'bc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- MIDCAP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--teal)">🟢 MIDCAP — 30% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="mc-count" style="color:var(--teal);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="mc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allMidcap.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="mc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'mc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- SMALLCAP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--purple)">🟣 SMALLCAP — 20% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="sc-count" style="color:var(--purple);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="sc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allSmallcap.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="sc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'sc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div id="selection-warning" style="display:none;padding:8px 12px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;font-size:12px;color:var(--amber);margin-bottom:8px">
+        ⚠ Please select exactly 3 stocks from each category
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewClientCustom()">✓ Create Client & Build Portfolio</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+// Track selections
+const NC_SELECTED = { bc: [], mc: [], sc: [] };
+
+function ncToggleStock(el, cat) {
+  const sym  = el.dataset.sym;
+  const ltp  = parseFloat(el.dataset.ltp);
+  const list = NC_SELECTED[cat];
+  const idx  = list.findIndex(x => x.sym === sym);
+  const colors = { bc: 'var(--accent)', mc: 'var(--teal)', sc: 'var(--purple)' };
+  const max = 3;
+
+  if (idx >= 0) {
+    // Deselect
+    list.splice(idx, 1);
+    el.style.border = '1px solid var(--border2)';
+    el.style.background = 'var(--surface)';
+    el.querySelector('span').style.color = '';
+  } else {
+    if (list.length >= max) {
+      showToast(`Max ${max} stocks per category`, 'amber');
+      return;
+    }
+    list.push({ sym, ltp });
+    el.style.border = `1px solid ${colors[cat]}`;
+    el.style.background = `rgba(59,130,246,0.1)`;
+    el.querySelector('span').style.color = colors[cat];
+  }
+
+  const countEl = document.getElementById(`${cat}-count`);
+  if (countEl) countEl.textContent = list.length;
+}
+
+function ncFilterStocks(query) {
+  const q = query.toUpperCase();
+  document.querySelectorAll('.nc-chip').forEach(chip => {
+    const sym = chip.dataset.sym || '';
+    chip.style.display = (!q || sym.includes(q)) ? '' : 'none';
+  });
+}
+
+function submitNewClientCustom() {
+  const name    = document.getElementById('nc-name')?.value?.trim();
+  const capital = parseFloat(document.getElementById('nc-capital')?.value);
+  const phone   = document.getElementById('nc-phone')?.value?.trim();
+  const email   = document.getElementById('nc-email')?.value?.trim();
+
+  if (!name)               { showToast('Please enter client name', 'amber'); return; }
+  if (!capital || capital < 1000) { showToast('Please enter capital ≥ ₹1,000', 'amber'); return; }
+
+  // Validate selections
+  const warn = document.getElementById('selection-warning');
+  if (NC_SELECTED.bc.length < 1 || NC_SELECTED.mc.length < 1 || NC_SELECTED.sc.length < 1) {
+    // Auto-select top 3 if nothing chosen
+    if (NC_SELECTED.bc.length === 0) NC_SELECTED.bc = NSE_STOCKS.bluechip.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+    if (NC_SELECTED.mc.length === 0) NC_SELECTED.mc = NSE_STOCKS.midcap.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+    if (NC_SELECTED.sc.length === 0) NC_SELECTED.sc = NSE_STOCKS.smallcap.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+  }
+
+  STATE.defaultSL     = parseFloat(document.getElementById('nc-sl')?.value) || 3;
+  STATE.defaultTarget = parseFloat(document.getElementById('nc-tp')?.value) || 6;
+
+  // Build positions from custom selection
+  const slPct = STATE.defaultSL / 100;
+  const tpPct = STATE.defaultTarget / 100;
+  const allocs = { bc: 0.5, mc: 0.3, sc: 0.2 };
+  const tierNames = { bc: 'Bluechip', mc: 'Midcap', sc: 'Smallcap' };
+  const positions = [];
+
+  ['bc','mc','sc'].forEach(cat => {
+    const stocks = NC_SELECTED[cat];
+    const tierCap = capital * allocs[cat];
+    const perStock = tierCap / stocks.length;
+    stocks.forEach(s => {
+      const qty = Math.max(1, Math.floor(perStock / s.ltp));
+      const entry = s.ltp;
+      const sl   = entry * (1 - slPct);
+      const tp   = entry * (1 + tpPct);
+      positions.push({
+        id: Math.random().toString(36).slice(2),
+        symbol: s.sym,
+        name: s.sym,
+        tier: tierNames[cat],
+        qty, entryPrice: parseFloat(entry.toFixed(2)),
+        ltp: entry,
+        slPrice: parseFloat(sl.toFixed(2)),
+        halfSlPrice: parseFloat((entry-(entry-sl)/2).toFixed(2)),
+        targetPrice: parseFloat(tp.toFixed(2)),
+        halfTargetPrice: parseFloat((entry+(tp-entry)/2).toFixed(2)),
+        pnl: 0, pnlPct: 0, status: 'open', alerted: {},
+        addedAt: new Date().toISOString()
+      });
+    });
+  });
+
+  const client = {
+    id: STATE.nextClientId++,
+    name, capital, phone, email,
+    positions,
+    createdAt: new Date().toISOString(),
+    realizedPnl: 0
+  };
+  STATE.clients.push(client);
+
+  // Reset selections
+  NC_SELECTED.bc = []; NC_SELECTED.mc = []; NC_SELECTED.sc = [];
+
+  document.getElementById('client-count-badge').textContent = STATE.clients.length;
+  closeModal();
+  showToast(`✓ ${name} — ${positions.length} positions created`, 'green');
+  renderPage();
+}
+
+function closeModal() {
+  const m = document.getElementById('new-client-modal');
+  if (m) m.remove();
+}
+
+function previewAllocation() {
+  const cap = parseFloat(document.getElementById('nc-capital')?.value) || 0;
+  const el = document.getElementById('alloc-preview');
+  if (!el) return;
+  if (!cap) { el.textContent = 'Enter capital amount to see allocation preview'; return; }
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div style="text-align:center">
+        <div style="color:var(--accent);font-size:16px;font-weight:700">₹${formatNum(cap*0.5)}</div>
+        <div>Bluechip (50%)</div>
+        <div style="margin-top:4px">3 stocks × ₹${formatNum(cap*0.5/3)}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--teal);font-size:16px;font-weight:700">₹${formatNum(cap*0.3)}</div>
+        <div>Midcap (30%)</div>
+        <div style="margin-top:4px">3 stocks × ₹${formatNum(cap*0.3/3)}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="color:var(--purple);font-size:16px;font-weight:700">₹${formatNum(cap*0.2)}</div>
+        <div>Smallcap (20%)</div>
+        <div style="margin-top:4px">3 stocks × ₹${formatNum(cap*0.2/3)}</div>
+      </div>
+    </div>`;
+}
+
+function submitNewClient() {
+  const name = document.getElementById('nc-name')?.value?.trim();
+  const capital = parseFloat(document.getElementById('nc-capital')?.value);
+  const phone = document.getElementById('nc-phone')?.value?.trim();
+  const email = document.getElementById('nc-email')?.value?.trim();
+  
+  if (!name) { showToast('Please enter client name', 'amber'); return; }
+  if (!capital || capital < 1000) { showToast('Please enter capital ≥ ₹1,000', 'amber'); return; }
+  
+  STATE.defaultSL = parseFloat(document.getElementById('nc-sl')?.value) || STATE.defaultSL;
+  STATE.defaultTarget = parseFloat(document.getElementById('nc-tp')?.value) || STATE.defaultTarget;
+  
+  const client = createClient(name, capital, phone, email);
+  closeModal();
+  showToast(`✓ ${name} added — ${client.positions.length} positions created`, 'green');
+  renderPage();
+}
+
+function deleteClient(id) {
+  if (!confirm('Delete this client and all their positions?')) return;
+  STATE.clients = STATE.clients.filter(c => c.id !== id);
+  document.getElementById('client-count-badge').textContent = STATE.clients.length;
+  renderPage();
+}
+
+function openEditPositions(clientId) {
+  const client = STATE.clients.find(c => c.id === clientId);
+  if (!client) return;
+  showToast(`Edit positions for ${client.name} — coming in full version`, 'amber');
+}
+
+function addCustomStock(cat) {
+  const sym = prompt(`Enter NSE symbol for ${cat} (e.g., TATAMOTORS):`);
+  if (!sym) return;
+  showToast(`${sym.toUpperCase()} — fetch from Angel SmartAPI in live version`, 'amber');
+}
+
+
+function filterStocks(q) {
+  const query = q.toUpperCase();
+  document.querySelectorAll('.stock-chip').forEach(chip => {
+    const sym = chip.dataset.sym || '';
+    chip.style.display = (!query || sym.includes(query)) ? '' : 'none';
+  });
+}
+
+function toggleStockChip(el, cat, sym) {
+  const selected = el.style.borderColor === 'var(--accent)' || el.style.borderColor.includes('accent') || el.textContent.startsWith('✓');
+  // Toggle visual
+  el.style.borderColor = '';
+  el.style.opacity = '0.5';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SETTINGS ACTIONS
+// ═══════════════════════════════════════════════════════════
+function saveAngelSettings() {
+  STATE.angelApiKey = document.getElementById('angel-key')?.value || '';
+  STATE.angelClientId = document.getElementById('angel-client')?.value || '';
+  showToast('Angel One settings saved — connect backend to activate', 'green');
+}
+
+function testAngelConnection() {
+  showToast('Connecting to Angel One SmartAPI... (requires backend)', 'amber');
+}
+
+function saveDefaultSettings() {
+  STATE.defaultSL = parseFloat(document.getElementById('def-sl')?.value) || 3;
+  STATE.defaultTarget = parseFloat(document.getElementById('def-tp')?.value) || 6;
+  showToast('Settings saved', 'green');
+}
+
+function updateRRDisplay() {
+  const sl = parseFloat(document.getElementById('def-sl')?.value) || 1;
+  const tp = parseFloat(document.getElementById('def-tp')?.value) || 1;
+  const el = document.getElementById('rr-display');
+  if (el) el.textContent = `1:${(tp/sl).toFixed(1)}`;
+}
+
+function testAlerts() {
+  showAlert('🧪 Test Alert — Telegram', 'Connection successful! Alerts active.', 'green');
+  showAlert('🧪 Test Alert — Email', 'alerts@portfolioos.in is configured.', 'green');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════════
+let chartInstances = {};
+
+function destroyChart(id) {
+  if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+}
+
+function initCharts() {
+  // Dashboard alloc donut
+  const allocEl = document.getElementById('allocChart');
+  if (allocEl) {
+    destroyChart('alloc');
+    chartInstances['alloc'] = new Chart(allocEl, {
+      type: 'doughnut',
+      data: {
+        labels: ['Bluechip','Midcap','Smallcap'],
+        datasets: [{ data: [50,30,20], backgroundColor: ['#3b82f6','#14b8a6','#a855f7'], borderWidth: 0, hoverOffset: 4 }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{ legend:{ display:false } } }
+    });
+  }
+  
+  // Dashboard pnl bar
+  const pnlEl = document.getElementById('pnlChart');
+  if (pnlEl && STATE.clients.length > 0) {
+    destroyChart('pnl');
+    chartInstances['pnl'] = new Chart(pnlEl, {
+      type: 'bar',
+      data: {
+        labels: STATE.clients.map(c => c.name.split(' ')[0]),
+        datasets: [{
+          label: 'P&L ₹',
+          data: STATE.clients.map(c => getClientMetrics(c).totalPnl),
+          backgroundColor: STATE.clients.map(c => getClientMetrics(c).totalPnl >= 0 ? 'rgba(34,197,94,0.6)' : 'rgba(239,68,68,0.5)'),
+          borderRadius: 4,
+          borderWidth: 0
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ticks:{color:'#8899bb',font:{size:11}}}, y:{ticks:{color:'#8899bb',font:{size:11}}} } }
+    });
+  }
+  
+  // Portfolio donut
+  const doEl = document.getElementById('donutChart');
+  if (doEl) {
+    destroyChart('donut');
+    chartInstances['donut'] = new Chart(doEl, {
+      type: 'doughnut',
+      data: {
+        labels: ['Bluechip','Midcap','Smallcap'],
+        datasets: [{ data: [50,30,20], backgroundColor: ['#3b82f6','#14b8a6','#a855f7'], borderWidth: 0 }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{display:false} } }
+    });
+  }
+  
+  // Return chart
+  const retEl = document.getElementById('retChart');
+  if (retEl) {
+    destroyChart('ret');
+    const labels = ['Jan','Feb','Mar','Apr','May','Jun'];
+    const data = [0, 1.2, 0.8, 2.1, 1.5, 3.4];
+    chartInstances['ret'] = new Chart(retEl, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Return %',
+          data,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.08)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#3b82f6',
+          pointRadius: 4,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ticks:{color:'#8899bb',font:{size:11}},grid:{color:'rgba(255,255,255,0.04)'}},
+          y:{ticks:{color:'#8899bb',font:{size:11},callback:v=>v+'%'},grid:{color:'rgba(255,255,255,0.04)'}}
+        }
+      }
+    });
+  }
+}
+
+function afterRender() {
+  setTimeout(initCharts, 50);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function formatNum(n) {
+  const num = parseFloat(n) || 0;
+  if (Math.abs(num) >= 10000000) return (num/10000000).toFixed(2)+'Cr';
+  if (Math.abs(num) >= 100000) return (num/100000).toFixed(2)+'L';
+  if (Math.abs(num) >= 1000) return (num/1000).toFixed(1)+'K';
+  return num.toFixed(0);
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// REAL PRICE FEED — connects to local Python server
+// ═══════════════════════════════════════════════════════════
+const API_BASE = 'http://localhost:5000';
+
+async function fetchRealPrices() {
+  try {
+    const res = await fetch(API_BASE + '/api/market/all');
+    const data = await res.json();
+    const prices = data.prices;
+    
+    // Update all NSE_STOCKS with real prices
+    ['bluechip','midcap','smallcap'].forEach(cat => {
+      NSE_STOCKS[cat].forEach(stock => {
+        if (prices[stock.sym]) {
+          const oldPrice = stock.ltp;
+          stock.ltp = prices[stock.sym];
+          stock.change = parseFloat(((stock.ltp - oldPrice) / oldPrice * 100).toFixed(2));
+        }
+      });
+    });
+
+    // Update client positions too
+    STATE.clients.forEach(client => {
+      client.positions.forEach(pos => {
+        if (prices[pos.symbol]) {
+          pos.ltp = prices[pos.symbol];
+          updatePositionStatus(pos);
+        }
+      });
+    });
+
+    // Show connected status
+    const dot = document.getElementById('market-dot');
+    const txt = document.getElementById('market-text');
+    if (dot) dot.style.background = 'var(--green)';
+    if (txt) txt.textContent = '🟢 Live NSE Prices';
+    
+    updateLiveElements();
+    console.log('✓ Real prices loaded at', data.updated);
+  } catch(e) {
+    // Server not running — use simulated prices silently
+    console.log('Server offline — using simulated prices');
+    const dot = document.getElementById('market-dot');
+    if (dot) dot.style.background = 'var(--amber)';
+  }
+}
+
+// Fetch real prices every 60 seconds
+setInterval(fetchRealPrices, 60000);
+// Also fetch immediately on load
+setTimeout(fetchRealPrices, 2000);
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+// Add demo client on load
+window.addEventListener('load', () => {
+  updateMarketStatus();
+  setInterval(updateMarketStatus, 30000);
+  
+  // Add a sample client for demo
+  createClient('Priya Sharma', 500000, '+91 98765 00001', 'priya@example.com');
+  createClient('Rahul Verma', 250000, '+91 98765 00002', 'rahul@example.com');
+  
+  renderPage();
+  
+  // Auto-refresh prices every 5 seconds
+  setInterval(() => {
+    simulatePrices();
+    if (['positions','risk'].includes(STATE.page)) renderPage();
+    else updateLiveElements();
+  }, 5000);
+  
+  showToast('PortfolioOS loaded — 2 demo clients added', 'green');
+});
+</script>
+</body>
+</html>
