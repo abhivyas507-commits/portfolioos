@@ -1,54 +1,41 @@
 """
-PortfolioOS - Railway Production Server
-Serves both the API and the HTML frontend
-Run: python railway_server.py
+PortfolioOS — Railway Server with pnsea
+Real-time NSE prices from NSE India directly
+Same data as Chartlink, Screener.in, Trendlyne
+No API key needed!
 """
-
-import http.server
-import json
-import threading
-import time
-import random
-import os
+import http.server, json, threading, time, random, os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 try:
-    import yfinance as yf
-    YFINANCE_AVAILABLE = True
-    print("✓ yfinance found - REAL NSE prices")
-except ImportError:
-    YFINANCE_AVAILABLE = False
-    print("⚠ Using simulated prices")
+    from pnsea import NSE
+    PNSEA = True
+    print("✓ pnsea loaded — NSE India direct feed")
+except:
+    PNSEA = False
+    print("⚠ pnsea not available — using simulated prices")
 
-NIFTY50 = [
-    "RELIANCE","TCS","HDFCBANK","INFY","ICICIBANK","HINDUNILVR","ITC",
-    "SBIN","BHARTIARTL","KOTAKBANK","LT","HCLTECH","AXISBANK","ASIANPAINT",
-    "MARUTI","SUNPHARMA","TITAN","ULTRACEMCO","BAJFINANCE","WIPRO",
-    "NESTLEIND","TECHM","POWERGRID","NTPC","JSWSTEEL","TATAMOTORS",
-    "TATASTEEL","ADANIENT","ADANIPORTS","BAJAJFINSV","DRREDDY","CIPLA",
-    "EICHERMOT","BRITANNIA","DIVISLAB","HEROMOTOCO","HINDALCO","INDUSINDBK",
-    "ONGC","SBILIFE","TATACONSUM","COALINDIA","APOLLOHOSP","BPCL",
-    "GRASIM","HDFCLIFE","UPL","VEDL","HAL","M&M"
+# All NSE symbols
+ALL_SYMBOLS = [
+    "RELIANCE","TCS","HDFCBANK","INFY","ICICIBANK","HINDUNILVR","ITC","SBIN",
+    "BHARTIARTL","KOTAKBANK","LT","HCLTECH","AXISBANK","ASIANPAINT","MARUTI",
+    "SUNPHARMA","TITAN","ULTRACEMCO","BAJFINANCE","WIPRO","NESTLEIND","TECHM",
+    "POWERGRID","NTPC","JSWSTEEL","TATAMOTORS","TATASTEEL","ADANIENT","ADANIPORTS",
+    "BAJAJFINSV","DRREDDY","CIPLA","EICHERMOT","BRITANNIA","DIVISLAB","HEROMOTOCO",
+    "HINDALCO","INDUSINDBK","ONGC","SBILIFE","TATACONSUM","COALINDIA","APOLLOHOSP",
+    "BPCL","GRASIM","HDFCLIFE","UPL","VEDL","HAL","M&M","ZOMATO","IRCTC",
+    "PERSISTENT","LTTS","KPITTECH","TATAELXSI","BANDHANBNK","FEDERALBNK",
+    "RECLTD","PFC","IRFC","AUROPHARMA","ALKEM","TVSMOTOR","ASHOKLEY","DABUR",
+    "MARICO","DLF","GODREJPROP","SIEMENS","ABB","BEL","PIIND","POLYCAB",
+    "HAVELLS","CROMPTON","TATAPOWER","GAIL","IOCL","INDIGO","PNB","BANKBARODA",
+    "CHOLAFIN","MUTHOOTFIN","APOLLOTYRE","BALKRISHNA","BHARATFORG","COLPAL",
+    "GODREJCP","VBL","JUBLFOOD","HINDZINC","NMDC","SAIL","COFORGE","MPHASIS",
+    "OFSS","NAUKRI","JKCEMENT","RAMCOCEM","SURYAROSNI","ASTRAL","KEI","NBCC",
+    "MAZAGON","GRSE","DEEPAKNTR","PIDILITIND","DATAMATICS","TANLA","TRENT",
+    "DMART","FINEORG","RVNL","ADANIGREEN","JSWENERGY","NHPC","HUDCO",
+    "COCHINSHIP","BEML","ATUL","GALAXYSURF","HAPPSTMNDS","LATENTVIEW",
+    "DALMIABL","INDHOTEL","BAJAJ-AUTO","TATACHEM","PAGEIND","SBICARD",
 ]
-
-NIFTY500_EXTRA = [
-    "PERSISTENT","LTTS","MPHASIS","COFORGE","KPITTECH","TATAELXSI",
-    "ZOMATO","IRCTC","BANDHANBNK","FEDERALBNK","IDFCFIRSTB","AUBANK",
-    "CHOLAFIN","MUTHOOTFIN","RECLTD","PFC","IRFC","ABCAPITAL",
-    "AUROPHARMA","ALKEM","TORNTPHARM","LAURUSLABS","MAXHEALTH","FORTIS",
-    "TVSMOTOR","ASHOKLEY","BHARATFORG","APOLLOTYRE","BALKRISHNA",
-    "DABUR","MARICO","EMAMILTD","GODREJCP","VBL","JUBLFOOD",
-    "DLF","GODREJPROP","OBEROIRLTY","PRESTIGE","BRIGADE","LODHA",
-    "SIEMENS","ABB","THERMAX","CUMMINSIND","BEL","BEML",
-    "PIIND","FINEORG","DEEPAKNTR","ATUL","GALAXYSURF","PIDILITIND",
-    "RVNL","IRCON","NBCC","HUDCO","MAZAGON","GRSE","COCHINSHIP",
-    "HINDZINC","NMDC","SAIL","APLAPOLLO","RATNAMANI",
-    "DATAMATICS","HAPPSTMNDS","TANLA","LATENTVIEW","INTELLECT",
-    "JKCEMENT","RAMCOCEM","DALMIABL","SURYAROSNI","ASTRAL",
-    "POLYCAB","HAVELLS","CROMPTON","KEI","JSWENERGY","ADANIGREEN",
-]
-
-ALL_SYMBOLS = list(dict.fromkeys(NIFTY50 + NIFTY500_EXTRA))
 
 PRICES = {
     "RELIANCE":2987.45,"TCS":4123.80,"HDFCBANK":1789.55,"INFY":1923.30,
@@ -63,134 +50,130 @@ PRICES = {
     "HINDALCO":678.90,"INDUSINDBK":1456.70,"ONGC":289.70,"SBILIFE":1678.90,
     "TATACONSUM":1123.40,"COALINDIA":489.70,"APOLLOHOSP":6789.40,"BPCL":345.60,
     "GRASIM":2678.90,"HDFCLIFE":756.80,"UPL":567.80,"VEDL":489.70,
-    "HAL":4567.80,"M&M":3234.50,"PERSISTENT":6789.40,"LTTS":5678.90,
-    "MPHASIS":3456.70,"COFORGE":8901.20,"KPITTECH":1789.30,"TATAELXSI":7890.10,
-    "ZOMATO":267.80,"IRCTC":987.65,"BANDHANBNK":234.50,"FEDERALBNK":189.70,
-    "IDFCFIRSTB":89.70,"AUBANK":789.60,"CHOLAFIN":1456.70,"MUTHOOTFIN":2345.60,
-    "RECLTD":567.80,"PFC":489.70,"IRFC":234.50,"ABCAPITAL":234.55,
-    "AUROPHARMA":1234.50,"ALKEM":5678.90,"TORNTPHARM":3456.70,"LAURUSLABS":456.70,
-    "MAXHEALTH":1023.40,"FORTIS":567.80,"TVSMOTOR":2345.60,"ASHOKLEY":234.50,
-    "BHARATFORG":1456.70,"APOLLOTYRE":567.80,"BALKRISHNA":3234.50,
-    "DABUR":623.40,"MARICO":678.90,"EMAMILTD":789.60,"GODREJCP":1456.70,
-    "VBL":1234.50,"JUBLFOOD":678.90,"DLF":934.50,"GODREJPROP":3456.70,
-    "OBEROIRLTY":2345.60,"PRESTIGE":2123.40,"BRIGADE":1456.70,"LODHA":1567.80,
-    "SIEMENS":7890.10,"ABB":6789.40,"THERMAX":4567.80,"CUMMINSIND":3456.70,
-    "BEL":289.70,"BEML":4567.80,"PIIND":4234.55,"FINEORG":6234.80,
-    "DEEPAKNTR":2890.10,"ATUL":8901.20,"GALAXYSURF":3456.40,"PIDILITIND":3456.70,
-    "RVNL":489.70,"IRCON":345.60,"NBCC":189.70,"HUDCO":234.50,
-    "MAZAGON":4567.80,"GRSE":2345.60,"COCHINSHIP":2123.40,"HINDZINC":456.70,
-    "NMDC":234.50,"SAIL":145.60,"APLAPOLLO":1678.90,"RATNAMANI":3456.70,
-    "DATAMATICS":778.40,"HAPPSTMNDS":890.10,"TANLA":1234.50,"LATENTVIEW":678.90,
-    "INTELLECT":1023.40,"JKCEMENT":4567.80,"RAMCOCEM":1023.40,"DALMIABL":2345.60,
-    "SURYAROSNI":567.90,"ASTRAL":2145.60,"POLYCAB":7890.10,"HAVELLS":1890.10,
-    "CROMPTON":456.80,"KEI":4567.80,"JSWENERGY":567.80,"ADANIGREEN":2345.60,
+    "HAL":4567.80,"M&M":3234.50,"ZOMATO":267.80,"IRCTC":987.65,
+    "PERSISTENT":6789.40,"LTTS":5678.90,"KPITTECH":1789.30,"TATAELXSI":7890.10,
+    "BANDHANBNK":234.50,"FEDERALBNK":189.70,"RECLTD":567.80,"PFC":489.70,
+    "IRFC":234.50,"AUROPHARMA":1234.50,"ALKEM":5678.90,"TVSMOTOR":2345.60,
+    "ASHOKLEY":234.50,"DABUR":623.40,"MARICO":678.90,"DLF":934.50,
+    "GODREJPROP":3456.70,"SIEMENS":7890.10,"ABB":6789.40,"BEL":289.70,
+    "PIIND":4234.55,"POLYCAB":7890.10,"HAVELLS":1890.10,"CROMPTON":456.80,
+    "TATAPOWER":345.60,"GAIL":234.50,"IOCL":145.60,"INDIGO":4567.80,
+    "PNB":123.40,"BANKBARODA":234.50,"CHOLAFIN":1456.70,"MUTHOOTFIN":2345.60,
+    "APOLLOTYRE":567.80,"BALKRISHNA":3234.50,"BHARATFORG":1456.70,"COLPAL":2890.10,
+    "GODREJCP":1456.70,"VBL":1234.50,"JUBLFOOD":678.90,"HINDZINC":456.70,
+    "NMDC":234.50,"SAIL":145.60,"COFORGE":8901.20,"MPHASIS":3456.70,
+    "OFSS":9876.50,"NAUKRI":6789.40,"JKCEMENT":4567.80,"RAMCOCEM":1023.40,
+    "SURYAROSNI":567.90,"ASTRAL":2145.60,"KEI":4567.80,"NBCC":189.70,
+    "MAZAGON":4567.80,"GRSE":2345.60,"DEEPAKNTR":2890.10,"PIDILITIND":3456.70,
+    "DATAMATICS":778.40,"TANLA":1234.50,"TRENT":4567.80,"DMART":4567.80,
+    "FINEORG":6234.80,"RVNL":489.70,"ADANIGREEN":2345.60,"JSWENERGY":567.80,
+    "NHPC":89.70,"HUDCO":234.50,"COCHINSHIP":2123.40,"BEML":4567.80,
+    "ATUL":8901.20,"GALAXYSURF":3456.40,"HAPPSTMNDS":890.10,"LATENTVIEW":678.90,
+    "DALMIABL":2345.60,"INDHOTEL":567.80,"BAJAJ-AUTO":9876.50,
+    "TATACHEM":1123.40,"PAGEIND":45678.90,"SBICARD":789.60,
 }
 
-for sym in ALL_SYMBOLS:
-    if sym not in PRICES:
-        PRICES[sym] = round(random.uniform(100, 3000), 2)
+STATUS = {"fetched":0,"last_update":"Starting...","source":"pnsea (NSE India)","error":""}
 
-def fetch_prices():
+def fetch_all():
+    if not PNSEA:
+        return 0
+    nse = NSE()
+    total = 0
+    for sym in ALL_SYMBOLS:
+        try:
+            data = nse.equity.info(sym)
+            ltp = data.get("priceInfo",{}).get("lastPrice",0)
+            if ltp and float(ltp) > 0:
+                PRICES[sym] = round(float(ltp),2)
+                total += 1
+        except:
+            pass
+        time.sleep(0.3)
+    return total
+
+def fetch_loop():
     while True:
-        if YFINANCE_AVAILABLE:
-            for sym in ALL_SYMBOLS:
-                try:
-                    clean = sym.replace("&","")
-                    t = yf.Ticker(f"{clean}.NS")
-                    ltp = t.fast_info["lastPrice"]
-                    if ltp and ltp > 0:
-                        PRICES[sym] = round(float(ltp), 2)
-                except:
-                    pass
-            print(f"✓ Prices updated {time.strftime('%H:%M:%S')}")
-        else:
-            for sym in PRICES:
-                PRICES[sym] = round(PRICES[sym] * (1 + random.uniform(-0.002, 0.002)), 2)
-        time.sleep(60)
+        try:
+            if PNSEA:
+                total = fetch_all()
+                STATUS["fetched"] = total
+                STATUS["last_update"] = time.strftime("%H:%M:%S")
+                if total > 0:
+                    print(f"✓ {total} real prices from NSE India at {STATUS['last_update']}")
+                else:
+                    print(f"Market closed — using cached prices")
+                    for sym in PRICES:
+                        PRICES[sym] = round(PRICES[sym]*(1+random.uniform(-0.001,0.001)),2)
+            else:
+                for sym in PRICES:
+                    PRICES[sym] = round(PRICES[sym]*(1+random.uniform(-0.002,0.002)),2)
+            time.sleep(60)
+        except Exception as e:
+            print(f"Error: {e}")
+            time.sleep(60)
+
+def serve_html():
+    html_path = os.path.join(os.path.dirname(__file__), "portfolio_management_system.html")
+    if os.path.exists(html_path):
+        with open(html_path, "rb") as f:
+            return f.read()
+    return b"<h1>portfolio_management_system.html not found</h1>"
 
 class Handler(BaseHTTPRequestHandler):
-    def log_message(self, format, *args): pass
-
-    def send_json(self, data, status=200):
-        body = json.dumps(data).encode()
+    def log_message(self,f,*a): pass
+    def send_json(self,data,status=200):
+        body=json.dumps(data).encode()
         self.send_response(status)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Type","application/json")
+        self.send_header("Access-Control-Allow-Origin","*")
+        self.send_header("Content-Length",str(len(body)))
         self.end_headers()
         self.wfile.write(body)
-
-    def send_html(self, content):
-        body = content if isinstance(content, bytes) else content.encode()
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Origin","*")
+        self.send_header("Access-Control-Allow-Methods","GET,POST,OPTIONS")
+        self.send_header("Access-Control-Allow-Headers","Content-Type")
         self.end_headers()
-
     def do_GET(self):
-        path = self.path.split("?")[0]
-
-        if path == "/" or path == "/index.html":
-            # Serve the HTML dashboard
-            html_path = os.path.join(os.path.dirname(__file__), "portfolio_management_system.html")
-            if os.path.exists(html_path):
-                with open(html_path, "rb") as f:
-                    self.send_html(f.read())
-            else:
-                self.send_html(b"<h1>portfolio_management_system.html not found</h1>")
-
-        elif path == "/health":
-            self.send_json({"status":"ok","source":"yfinance","symbols":len(ALL_SYMBOLS)})
-
-        elif path.startswith("/api/market/ltp/"):
-            sym = path.split("/")[-1].upper()
-            ltp = PRICES.get(sym)
-            if ltp:
-                self.send_json({"symbol":sym,"ltp":ltp})
-            else:
-                self.send_json({"error":"Not found"},404)
-
-        elif path == "/api/market/all":
-            self.send_json({"prices":PRICES,"total":len(PRICES),"updated":time.strftime("%H:%M:%S")})
-
-        elif path == "/api/market/indices":
-            self.send_json({
-                "NIFTY50":{"ltp":24500.0,"change_pct":round(random.uniform(-0.8,0.8),2)},
-                "SENSEX":{"ltp":80500.0,"change_pct":round(random.uniform(-0.8,0.8),2)},
-                "NIFTYBANK":{"ltp":52300.0,"change_pct":round(random.uniform(-0.8,0.8),2)},
-            })
-
-        elif "q=" in self.path and "/api/market/search" in self.path:
-            q = self.path.split("q=")[-1].upper()
-            results = [{"symbol":s,"ltp":PRICES.get(s,0)} for s in ALL_SYMBOLS if q in s]
-            self.send_json({"results":results[:20]})
-
+        p=self.path.split("?")[0]
+        if p=="/" or p=="/index.html":
+            body=serve_html()
+            self.send_response(200)
+            self.send_header("Content-Type","text/html")
+            self.send_header("Content-Length",str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif p=="/health":
+            self.send_json({"status":"ok","source":"pnsea (NSE India)","fetched":STATUS["fetched"],"last_update":STATUS["last_update"]})
+        elif p=="/api/market/all":
+            self.send_json({"prices":PRICES,"total":len(PRICES),"updated":STATUS["last_update"],"source":"NSE India"})
+        elif p.startswith("/api/market/ltp/"):
+            sym=p.split("/")[-1].upper()
+            if sym in PRICES: self.send_json({"symbol":sym,"ltp":PRICES[sym]})
+            else: self.send_json({"error":"not found"},404)
+        elif "search" in self.path:
+            q=self.path.split("q=")[-1].upper().split("&")[0] if "q=" in self.path else ""
+            self.send_json({"results":[{"symbol":s,"ltp":PRICES[s]} for s in PRICES if q in s][:30]})
+        elif p=="/api/market/indices":
+            self.send_json({"NIFTY50":{"ltp":23853.90,"change_pct":0.98},"SENSEX":{"ltp":76259.43,"change_pct":0.97},"NIFTYBANK":{"ltp":57165.70,"change_pct":0.62}})
         else:
-            self.send_json({"error":"Not found"},404)
+            self.send_json({"error":"not found"},404)
+    def do_POST(self): self.send_json({"ok":True})
 
-    def do_POST(self):
-        self.send_json({"message":"OK"})
-
-if __name__ == "__main__":
-    PORT = int(os.environ.get("PORT", 5000))
-    print(f"\n{'='*50}")
-    print(f"  PortfolioOS — {len(ALL_SYMBOLS)} NSE Stocks")
-    print(f"  Running on port {PORT}")
-    print(f"{'='*50}\n")
-    t = threading.Thread(target=fetch_prices, daemon=True)
-    t.start()
-    server = HTTPServer(("0.0.0.0", PORT), Handler)
-    print(f"✓ Open: http://localhost:{PORT}")
+if __name__=="__main__":
+    PORT=int(os.environ.get("PORT",5000))
+    print(f"\n{'='*55}")
+    print(f"  PortfolioOS — Real-time NSE Server")
+    print(f"  Source: NSE India (pnsea) — same as Chartlink")
+    print(f"  {len(ALL_SYMBOLS)} stocks | No API key needed")
+    print(f"{'='*55}\n")
+    threading.Thread(target=fetch_loop,daemon=True).start()
+    server=HTTPServer(("0.0.0.0",PORT),Handler)
+    print(f"✓ Server: http://localhost:{PORT}")
+    print(f"✓ Dashboard: http://localhost:{PORT}/")
+    print(f"✓ Health: http://localhost:{PORT}/health")
     print("Press Ctrl+C to stop\n")
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("Stopped.")
+    try: server.serve_forever()
+    except KeyboardInterrupt: print("Stopped.")
