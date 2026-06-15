@@ -288,34 +288,171 @@
 // ═══════════════════════════════════════════════════════════
 const NSE_STOCKS = {
   bluechip: [
-    {sym:'RELIANCE',name:'Reliance Industries',ltp:2987.45,change:1.23},
-    {sym:'TCS',name:'Tata Consultancy Svcs',ltp:4123.80,change:0.87},
-    {sym:'HDFCBANK',name:'HDFC Bank',ltp:1789.55,change:-0.34},
-    {sym:'INFY',name:'Infosys',ltp:1923.30,change:2.11},
-    {sym:'ICICIBANK',name:'ICICI Bank',ltp:1456.70,change:0.56},
-    {sym:'WIPRO',name:'Wipro',ltp:567.80,change:-0.23},
-    {sym:'SBIN',name:'State Bank of India',ltp:832.15,change:1.45},
-    {sym:'BAJFINANCE',name:'Bajaj Finance',ltp:7345.90,change:-0.78},
-    {sym:'HINDUNILVR',name:'Hindustan Unilever',ltp:2678.40,change:0.34},
-    {sym:'KOTAKBANK',name:'Kotak Mahindra Bank',ltp:1923.55,change:0.91},
+    // Nifty 50 — Large Cap
+    {sym:'RELIANCE',name:'Reliance Industries',ltp:2987.45,change:0},
+    {sym:'TCS',name:'Tata Consultancy Svcs',ltp:4123.80,change:0},
+    {sym:'HDFCBANK',name:'HDFC Bank',ltp:1789.55,change:0},
+    {sym:'INFY',name:'Infosys',ltp:1923.30,change:0},
+    {sym:'ICICIBANK',name:'ICICI Bank',ltp:1456.70,change:0},
+    {sym:'HINDUNILVR',name:'Hindustan Unilever',ltp:2678.40,change:0},
+    {sym:'ITC',name:'ITC Limited',ltp:468.90,change:0},
+    {sym:'SBIN',name:'State Bank of India',ltp:832.15,change:0},
+    {sym:'BHARTIARTL',name:'Bharti Airtel',ltp:1876.30,change:0},
+    {sym:'KOTAKBANK',name:'Kotak Mahindra Bank',ltp:1923.55,change:0},
+    {sym:'LT',name:'Larsen & Toubro',ltp:3456.80,change:0},
+    {sym:'HCLTECH',name:'HCL Technologies',ltp:1678.90,change:0},
+    {sym:'AXISBANK',name:'Axis Bank',ltp:1234.50,change:0},
+    {sym:'ASIANPAINT',name:'Asian Paints',ltp:2876.40,change:0},
+    {sym:'MARUTI',name:'Maruti Suzuki',ltp:12456.70,change:0},
+    {sym:'SUNPHARMA',name:'Sun Pharmaceutical',ltp:1678.90,change:0},
+    {sym:'TITAN',name:'Titan Company',ltp:3456.20,change:0},
+    {sym:'ULTRACEMCO',name:'UltraTech Cement',ltp:11234.50,change:0},
+    {sym:'BAJFINANCE',name:'Bajaj Finance',ltp:7345.90,change:0},
+    {sym:'WIPRO',name:'Wipro',ltp:567.80,change:0},
+    {sym:'NESTLEIND',name:'Nestle India',ltp:24567.80,change:0},
+    {sym:'TECHM',name:'Tech Mahindra',ltp:1678.90,change:0},
+    {sym:'POWERGRID',name:'Power Grid Corp',ltp:345.60,change:0},
+    {sym:'NTPC',name:'NTPC Limited',ltp:389.70,change:0},
+    {sym:'JSWSTEEL',name:'JSW Steel',ltp:987.60,change:0},
+    {sym:'TATAMOTORS',name:'Tata Motors',ltp:1023.40,change:0},
+    {sym:'TATASTEEL',name:'Tata Steel',ltp:167.80,change:0},
+    {sym:'ADANIENT',name:'Adani Enterprises',ltp:3456.70,change:0},
+    {sym:'ADANIPORTS',name:'Adani Ports',ltp:1456.70,change:0},
+    {sym:'BAJAJFINSV',name:'Bajaj Finserv',ltp:1876.50,change:0},
+    {sym:'DRREDDY',name:'Dr Reddys Lab',ltp:6789.40,change:0},
+    {sym:'CIPLA',name:'Cipla',ltp:1567.80,change:0},
+    {sym:'EICHERMOT',name:'Eicher Motors',ltp:4567.80,change:0},
+    {sym:'BRITANNIA',name:'Britannia Industries',ltp:5678.90,change:0},
+    {sym:'DIVISLAB',name:'Divis Laboratories',ltp:4567.80,change:0},
+    {sym:'HEROMOTOCO',name:'Hero MotoCorp',ltp:4567.80,change:0},
+    {sym:'HINDALCO',name:'Hindalco Industries',ltp:678.90,change:0},
+    {sym:'INDUSINDBK',name:'IndusInd Bank',ltp:1456.70,change:0},
+    {sym:'M&M',name:'Mahindra & Mahindra',ltp:3234.50,change:0},
+    {sym:'ONGC',name:'ONGC',ltp:289.70,change:0},
+    {sym:'SBILIFE',name:'SBI Life Insurance',ltp:1678.90,change:0},
+    {sym:'TATACONSUM',name:'Tata Consumer',ltp:1123.40,change:0},
+    {sym:'COALINDIA',name:'Coal India',ltp:489.70,change:0},
+    {sym:'APOLLOHOSP',name:'Apollo Hospitals',ltp:6789.40,change:0},
+    {sym:'BPCL',name:'BPCL',ltp:345.60,change:0},
+    {sym:'GRASIM',name:'Grasim Industries',ltp:2678.90,change:0},
+    {sym:'HDFCLIFE',name:'HDFC Life Insurance',ltp:756.80,change:0},
+    {sym:'UPL',name:'UPL Limited',ltp:567.80,change:0},
+    {sym:'VEDL',name:'Vedanta',ltp:489.70,change:0},
+    {sym:'HAL',name:'Hindustan Aeronautics',ltp:4567.80,change:0},
   ],
   midcap: [
-    {sym:'PIIND',name:'PI Industries',ltp:4234.55,change:2.34},
-    {sym:'PERSISTENT',name:'Persistent Systems',ltp:6789.40,change:3.12},
-    {sym:'LTTS',name:'L&T Technology',ltp:5678.90,change:-1.23},
-    {sym:'ASTRAL',name:'Astral Poly Technik',ltp:2145.60,change:0.78},
-    {sym:'CROMPTON',name:'Crompton Greaves',ltp:456.80,change:-0.45},
-    {sym:'ABCAPITAL',name:'Aditya Birla Capital',ltp:234.55,change:1.89},
-    {sym:'IRCTC',name:'IRCTC',ltp:987.65,change:0.67},
-    {sym:'TATACOMM',name:'Tata Communications',ltp:2345.70,change:-0.56},
+    // Nifty Midcap — Banking & Finance
+    {sym:'BANDHANBNK',name:'Bandhan Bank',ltp:234.50,change:0},
+    {sym:'FEDERALBNK',name:'Federal Bank',ltp:189.70,change:0},
+    {sym:'IDFCFIRSTB',name:'IDFC First Bank',ltp:89.70,change:0},
+    {sym:'AUBANK',name:'AU Small Finance Bank',ltp:789.60,change:0},
+    {sym:'RBLBANK',name:'RBL Bank',ltp:234.50,change:0},
+    {sym:'CHOLAFIN',name:'Cholamandalam Finance',ltp:1456.70,change:0},
+    {sym:'MUTHOOTFIN',name:'Muthoot Finance',ltp:2345.60,change:0},
+    {sym:'RECLTD',name:'REC Limited',ltp:567.80,change:0},
+    {sym:'PFC',name:'Power Finance Corp',ltp:489.70,change:0},
+    {sym:'IRFC',name:'Indian Railway Finance',ltp:234.50,change:0},
+    {sym:'ABCAPITAL',name:'Aditya Birla Capital',ltp:234.55,change:0},
+    {sym:'MANAPPURAM',name:'Manappuram Finance',ltp:189.70,change:0},
+    // IT Midcap
+    {sym:'PERSISTENT',name:'Persistent Systems',ltp:6789.40,change:0},
+    {sym:'LTTS',name:'L&T Technology',ltp:5678.90,change:0},
+    {sym:'MPHASIS',name:'Mphasis',ltp:3456.70,change:0},
+    {sym:'COFORGE',name:'Coforge',ltp:8901.20,change:0},
+    {sym:'KPITTECH',name:'KPIT Technologies',ltp:1789.30,change:0},
+    {sym:'TATAELXSI',name:'Tata Elxsi',ltp:7890.10,change:0},
+    {sym:'ZOMATO',name:'Zomato',ltp:267.80,change:0},
+    {sym:'IRCTC',name:'IRCTC',ltp:987.65,change:0},
+    // Pharma Midcap
+    {sym:'AUROPHARMA',name:'Aurobindo Pharma',ltp:1234.50,change:0},
+    {sym:'ALKEM',name:'Alkem Laboratories',ltp:5678.90,change:0},
+    {sym:'TORNTPHARM',name:'Torrent Pharma',ltp:3456.70,change:0},
+    {sym:'LAURUSLABS',name:'Laurus Labs',ltp:456.70,change:0},
+    {sym:'GRANULES',name:'Granules India',ltp:456.70,change:0},
+    {sym:'MAXHEALTH',name:'Max Healthcare',ltp:1023.40,change:0},
+    {sym:'FORTIS',name:'Fortis Healthcare',ltp:567.80,change:0},
+    // Auto Midcap
+    {sym:'TVSMOTOR',name:'TVS Motor Company',ltp:2345.60,change:0},
+    {sym:'ASHOKLEY',name:'Ashok Leyland',ltp:234.50,change:0},
+    {sym:'BHARATFORG',name:'Bharat Forge',ltp:1456.70,change:0},
+    {sym:'MOTHERSON',name:'Motherson Sumi',ltp:189.70,change:0},
+    {sym:'APOLLOTYRE',name:'Apollo Tyres',ltp:567.80,change:0},
+    {sym:'CEATLTD',name:'CEAT',ltp:3456.70,change:0},
+    {sym:'BALKRISHNA',name:'Balkrishna Industries',ltp:3234.50,change:0},
+    // FMCG Midcap
+    {sym:'DABUR',name:'Dabur India',ltp:623.40,change:0},
+    {sym:'MARICO',name:'Marico',ltp:678.90,change:0},
+    {sym:'EMAMILTD',name:'Emami',ltp:789.60,change:0},
+    {sym:'GODREJCP',name:'Godrej Consumer',ltp:1456.70,change:0},
+    {sym:'VBL',name:'Varun Beverages',ltp:1234.50,change:0},
+    {sym:'JUBLFOOD',name:'Jubilant Foodworks',ltp:678.90,change:0},
+    // Realty
+    {sym:'DLF',name:'DLF Limited',ltp:934.50,change:0},
+    {sym:'GODREJPROP',name:'Godrej Properties',ltp:3456.70,change:0},
+    {sym:'OBEROIRLTY',name:'Oberoi Realty',ltp:2345.60,change:0},
+    {sym:'PRESTIGE',name:'Prestige Estates',ltp:2123.40,change:0},
+    {sym:'BRIGADE',name:'Brigade Enterprises',ltp:1456.70,change:0},
+    {sym:'LODHA',name:'Macrotech (Lodha)',ltp:1567.80,change:0},
+    // Capital Goods
+    {sym:'SIEMENS',name:'Siemens India',ltp:7890.10,change:0},
+    {sym:'ABB',name:'ABB India',ltp:6789.40,change:0},
+    {sym:'THERMAX',name:'Thermax',ltp:4567.80,change:0},
+    {sym:'CUMMINSIND',name:'Cummins India',ltp:3456.70,change:0},
+    {sym:'BEL',name:'Bharat Electronics',ltp:289.70,change:0},
   ],
   smallcap: [
-    {sym:'DATAMATICS',name:'Datamatics Global',ltp:734.45,change:4.56},
-    {sym:'KPITTECH',name:'KPIT Technologies',ltp:1789.30,change:2.78},
-    {sym:'FINEORG',name:'Fine Organic',ltp:6234.80,change:-1.45},
-    {sym:'SURYAROSNI',name:'Surya Roshni',ltp:567.90,change:3.21},
-    {sym:'GALAXYSURF',name:'Galaxy Surfactants',ltp:3456.40,change:-0.89},
-    {sym:'RITCO',name:'Ritco Logistics',ltp:234.65,change:5.67},
+    // Chemicals
+    {sym:'PIIND',name:'PI Industries',ltp:4234.55,change:0},
+    {sym:'FINEORG',name:'Fine Organic',ltp:6234.80,change:0},
+    {sym:'DEEPAKNTR',name:'Deepak Nitrite',ltp:2890.10,change:0},
+    {sym:'ATUL',name:'Atul Limited',ltp:8901.20,change:0},
+    {sym:'RALLIS',name:'Rallis India',ltp:456.70,change:0},
+    {sym:'GALAXYSURF',name:'Galaxy Surfactants',ltp:3456.40,change:0},
+    {sym:'PIDILITIND',name:'Pidilite Industries',ltp:3456.70,change:0},
+    // PSU & Defence
+    {sym:'RVNL',name:'Rail Vikas Nigam',ltp:489.70,change:0},
+    {sym:'IRCON',name:'Ircon International',ltp:345.60,change:0},
+    {sym:'NBCC',name:'NBCC India',ltp:189.70,change:0},
+    {sym:'HUDCO',name:'HUDCO',ltp:234.50,change:0},
+    {sym:'MAZAGON',name:'Mazagon Dock',ltp:4567.80,change:0},
+    {sym:'GRSE',name:'Garden Reach Shipbldrs',ltp:2345.60,change:0},
+    {sym:'COCHINSHIP',name:'Cochin Shipyard',ltp:2123.40,change:0},
+    {sym:'BEML',name:'BEML Limited',ltp:4567.80,change:0},
+    // Metals & Mining
+    {sym:'HINDZINC',name:'Hindustan Zinc',ltp:456.70,change:0},
+    {sym:'NMDC',name:'NMDC',ltp:234.50,change:0},
+    {sym:'SAIL',name:'SAIL',ltp:145.60,change:0},
+    {sym:'NATIONALUM',name:'National Aluminium',ltp:234.50,change:0},
+    {sym:'APLAPOLLO',name:'APL Apollo Tubes',ltp:1678.90,change:0},
+    {sym:'RATNAMANI',name:'Ratnamani Metals',ltp:3456.70,change:0},
+    // IT Smallcap
+    {sym:'DATAMATICS',name:'Datamatics Global',ltp:778.40,change:0},
+    {sym:'HAPPSTMNDS',name:'Happiest Minds',ltp:890.10,change:0},
+    {sym:'TANLA',name:'Tanla Platforms',ltp:1234.50,change:0},
+    {sym:'ROUTE',name:'Route Mobile',ltp:1890.10,change:0},
+    {sym:'LATENTVIEW',name:'LatentView Analytics',ltp:678.90,change:0},
+    {sym:'INTELLECT',name:'Intellect Design',ltp:1023.40,change:0},
+    // Cement Smallcap
+    {sym:'JKCEMENT',name:'JK Cement',ltp:4567.80,change:0},
+    {sym:'RAMCOCEM',name:'Ramco Cements',ltp:1023.40,change:0},
+    {sym:'DALMIABL',name:'Dalmia Bharat',ltp:2345.60,change:0},
+    // Consumer
+    {sym:'SURYAROSNI',name:'Surya Roshni',ltp:567.90,change:0},
+    {sym:'ASTRAL',name:'Astral Poly Technik',ltp:2145.60,change:0},
+    {sym:'POLYCAB',name:'Polycab India',ltp:7890.10,change:0},
+    {sym:'HAVELLS',name:'Havells India',ltp:1890.10,change:0},
+    {sym:'CROMPTON',name:'Crompton Greaves',ltp:456.80,change:0},
+    {sym:'KEI',name:'KEI Industries',ltp:4567.80,change:0},
+    // Finance Smallcap
+    {sym:'UJJIVANSFB',name:'Ujjivan Small Finance',ltp:45.60,change:0},
+    {sym:'EQUITASBNK',name:'Equitas Small Finance',ltp:89.70,change:0},
+    {sym:'CREDITACC',name:'Credit Access Grameen',ltp:1234.50,change:0},
+    {sym:'SPANDANA',name:'Spandana Sphoorty',ltp:890.10,change:0},
+    // Energy
+    {sym:'JSWENERGY',name:'JSW Energy',ltp:567.80,change:0},
+    {sym:'ADANIGREEN',name:'Adani Green Energy',ltp:2345.60,change:0},
+    {sym:'ADANITRANS',name:'Adani Transmission',ltp:1023.40,change:0},
+    {sym:'INDIGRID',name:'IndiGrid',ltp:189.70,change:0},
   ]
 };
 
@@ -442,10 +579,10 @@ function createClient(name, capital, phone, email) {
   
   const positions = [];
   
-  // Auto-select 3 stocks per category
-  const bc = NSE_STOCKS.bluechip.slice(0, 3);
-  const mc = NSE_STOCKS.midcap.slice(0, 3);
-  const sc = NSE_STOCKS.smallcap.slice(0, 3);
+  // Auto-select 5 stocks per category
+  const bc = NSE_STOCKS.bluechip.slice(0, 5);
+  const mc = NSE_STOCKS.midcap.slice(0, 5);
+  const sc = NSE_STOCKS.smallcap.slice(0, 5);
   
   [[bc, bluechipCap, 'Bluechip'], [mc, midcapCap, 'Midcap'], [sc, smallcapCap, 'Smallcap']].forEach(([stocks, cap, tier]) => {
     const perStock = cap / stocks.length;
@@ -649,7 +786,7 @@ function renderDashboard() {
       <div class="table-wrap">
         <table>
           <tr><th>Symbol</th><th>Name</th><th>LTP</th><th>Change %</th><th>Category</th></tr>
-          ${topMovers.slice(0,8).map(s => {
+          ${topMovers.slice(0,20).map(s => {
             const cat = NSE_STOCKS.bluechip.includes(s)?'Bluechip':NSE_STOCKS.midcap.includes(s)?'Midcap':'Smallcap';
             const badge = {Bluechip:'badge-blue',Midcap:'badge-teal',Smallcap:'badge-purple'}[cat];
             return `<tr>
@@ -1225,17 +1362,23 @@ function renderSettings() {
 // MODAL: NEW CLIENT
 // ═══════════════════════════════════════════════════════════
 function openNewClientModal() {
-  const allStocks = [...NSE_STOCKS.bluechip, ...NSE_STOCKS.midcap, ...NSE_STOCKS.smallcap];
+  // Build full stock list from all categories
+  const allBluechip = NSE_STOCKS.bluechip;
+  const allMidcap   = NSE_STOCKS.midcap;
+  const allSmallcap = NSE_STOCKS.smallcap;
+
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.id = 'new-client-modal';
+  overlay.style.zIndex = '1000';
   overlay.innerHTML = `
-  <div class="modal">
+  <div class="modal" style="max-width:680px;max-height:92vh;overflow-y:auto">
     <div class="modal-header">
       <div class="modal-title">New Client — Portfolio Setup</div>
       <button class="close-btn" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
+
       <div class="section-title">Client Details</div>
       <div class="form-row">
         <div class="form-group"><label>Full Name *</label><input id="nc-name" placeholder="Rajesh Kumar"></div>
@@ -1245,40 +1388,201 @@ function openNewClientModal() {
         <div class="form-group"><label>Email</label><input id="nc-email" placeholder="rajesh@example.com"></div>
         <div class="form-group"><label>Capital (₹) *</label><input id="nc-capital" type="number" placeholder="500000" oninput="previewAllocation()"></div>
       </div>
-      
-      <div class="section-title" style="margin-top:16px">Auto Allocation Preview</div>
-      <div id="alloc-preview" style="padding:12px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--text3)">
+
+      <div id="alloc-preview" style="padding:12px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--text3);margin-bottom:14px">
         Enter capital amount to see allocation preview
       </div>
-      
-      <div class="section-title" style="margin-top:16px">Risk Parameters</div>
+
+      <div class="section-title">Risk Parameters</div>
       <div class="form-row">
-        <div class="form-group"><label>Stop Loss %</label><input id="nc-sl" type="number" value="${STATE.defaultSL}" step="0.5" min="0.5" max="20"></div>
-        <div class="form-group"><label>Target %</label><input id="nc-tp" type="number" value="${STATE.defaultTarget}" step="0.5" min="0.5" max="50"></div>
+        <div class="form-group"><label>Stop Loss %</label><input id="nc-sl" type="number" value="3" step="0.5" min="0.5" max="20"></div>
+        <div class="form-group"><label>Target %</label><input id="nc-tp" type="number" value="6" step="0.5" min="0.5" max="50"></div>
       </div>
-      
-      <div class="section-title" style="margin-top:16px">Stock Selection</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Default: top 3 per category auto-selected. Override below.</div>
-      ${['Bluechip (50%)','Midcap (30%)','Smallcap (20%)'].map((label,i) => {
-        const cat = ['bluechip','midcap','smallcap'][i];
-        return `<div style="margin-bottom:10px">
-          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">${label}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${NSE_STOCKS[cat].slice(0,3).map(s => `
-            <div class="stock-chip" style="cursor:pointer;border-color:var(--accent)" onclick="toggleStockChip(this,'${cat}','${s.sym}')">
-              ✓ ${s.sym} <span style="color:var(--text3);font-weight:400">₹${s.ltp.toFixed(0)}</span>
-            </div>`).join('')}
-            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="addCustomStock('${cat}')">+ Add</button>
-          </div>
-        </div>`;
-      }).join('')}
+
+      <div class="section-title" style="margin-top:4px">Stock Selection — Choose from Nifty 50 + 500</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">
+        Select exactly 3 stocks per category. Use search to find any stock.
+      </div>
+
+      <!-- Search bar -->
+      <input id="nc-stock-search" placeholder="🔍 Search — TATAMOTORS, ZOMATO, ADANIENT, HCLTECH..." 
+        style="margin-bottom:12px;font-size:12px" 
+        oninput="ncFilterStocks(this.value)">
+
+      <!-- BLUECHIP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--accent)">🔵 BLUECHIP — 50% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="bc-count" style="color:var(--accent);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="bc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allBluechip.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="bc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'bc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- MIDCAP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--teal)">🟢 MIDCAP — 30% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="mc-count" style="color:var(--teal);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="mc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allMidcap.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="mc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'mc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- SMALLCAP -->
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:600;color:var(--purple)">🟣 SMALLCAP — 20% of Capital</div>
+          <div style="font-size:11px;color:var(--text3)">Selected: <span id="sc-count" style="color:var(--purple);font-weight:600">0</span>/3</div>
+        </div>
+        <div id="sc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
+          ${allSmallcap.map(s => `
+          <div class="nc-chip" data-sym="${s.sym}" data-cat="sc" data-ltp="${s.ltp}"
+            onclick="ncToggleStock(this,'sc')"
+            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
+            <span style="font-weight:600">${s.sym}</span>
+            <span style="color:var(--text3);font-size:10px">₹${s.ltp.toFixed(0)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div id="selection-warning" style="display:none;padding:8px 12px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;font-size:12px;color:var(--amber);margin-bottom:8px">
+        ⚠ Please select exactly 3 stocks from each category
+      </div>
+
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitNewClient()">Create Client & Auto-Allocate</button>
+      <button class="btn btn-primary" onclick="submitNewClientCustom()">✓ Create Client & Build Portfolio</button>
     </div>
   </div>`;
   document.body.appendChild(overlay);
+}
+
+// Track selections
+const NC_SELECTED = { bc: [], mc: [], sc: [] };
+
+function ncToggleStock(el, cat) {
+  const sym  = el.dataset.sym;
+  const ltp  = parseFloat(el.dataset.ltp);
+  const list = NC_SELECTED[cat];
+  const idx  = list.findIndex(x => x.sym === sym);
+  const colors = { bc: 'var(--accent)', mc: 'var(--teal)', sc: 'var(--purple)' };
+  const max = 3;
+
+  if (idx >= 0) {
+    // Deselect
+    list.splice(idx, 1);
+    el.style.border = '1px solid var(--border2)';
+    el.style.background = 'var(--surface)';
+    el.querySelector('span').style.color = '';
+  } else {
+    if (list.length >= max) {
+      showToast(`Max ${max} stocks per category`, 'amber');
+      return;
+    }
+    list.push({ sym, ltp });
+    el.style.border = `1px solid ${colors[cat]}`;
+    el.style.background = `rgba(59,130,246,0.1)`;
+    el.querySelector('span').style.color = colors[cat];
+  }
+
+  const countEl = document.getElementById(`${cat}-count`);
+  if (countEl) countEl.textContent = list.length;
+}
+
+function ncFilterStocks(query) {
+  const q = query.toUpperCase();
+  document.querySelectorAll('.nc-chip').forEach(chip => {
+    const sym = chip.dataset.sym || '';
+    chip.style.display = (!q || sym.includes(q)) ? '' : 'none';
+  });
+}
+
+function submitNewClientCustom() {
+  const name    = document.getElementById('nc-name')?.value?.trim();
+  const capital = parseFloat(document.getElementById('nc-capital')?.value);
+  const phone   = document.getElementById('nc-phone')?.value?.trim();
+  const email   = document.getElementById('nc-email')?.value?.trim();
+
+  if (!name)               { showToast('Please enter client name', 'amber'); return; }
+  if (!capital || capital < 1000) { showToast('Please enter capital ≥ ₹1,000', 'amber'); return; }
+
+  // Validate selections
+  const warn = document.getElementById('selection-warning');
+  if (NC_SELECTED.bc.length < 1 || NC_SELECTED.mc.length < 1 || NC_SELECTED.sc.length < 1) {
+    // Auto-select top 3 if nothing chosen
+    if (NC_SELECTED.bc.length === 0) NC_SELECTED.bc = NSE_STOCKS.bluechip.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+    if (NC_SELECTED.mc.length === 0) NC_SELECTED.mc = NSE_STOCKS.midcap.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+    if (NC_SELECTED.sc.length === 0) NC_SELECTED.sc = NSE_STOCKS.smallcap.slice(0,3).map(s=>({sym:s.sym,ltp:s.ltp}));
+  }
+
+  STATE.defaultSL     = parseFloat(document.getElementById('nc-sl')?.value) || 3;
+  STATE.defaultTarget = parseFloat(document.getElementById('nc-tp')?.value) || 6;
+
+  // Build positions from custom selection
+  const slPct = STATE.defaultSL / 100;
+  const tpPct = STATE.defaultTarget / 100;
+  const allocs = { bc: 0.5, mc: 0.3, sc: 0.2 };
+  const tierNames = { bc: 'Bluechip', mc: 'Midcap', sc: 'Smallcap' };
+  const positions = [];
+
+  ['bc','mc','sc'].forEach(cat => {
+    const stocks = NC_SELECTED[cat];
+    const tierCap = capital * allocs[cat];
+    const perStock = tierCap / stocks.length;
+    stocks.forEach(s => {
+      const qty = Math.max(1, Math.floor(perStock / s.ltp));
+      const entry = s.ltp;
+      const sl   = entry * (1 - slPct);
+      const tp   = entry * (1 + tpPct);
+      positions.push({
+        id: Math.random().toString(36).slice(2),
+        symbol: s.sym,
+        name: s.sym,
+        tier: tierNames[cat],
+        qty, entryPrice: parseFloat(entry.toFixed(2)),
+        ltp: entry,
+        slPrice: parseFloat(sl.toFixed(2)),
+        halfSlPrice: parseFloat((entry-(entry-sl)/2).toFixed(2)),
+        targetPrice: parseFloat(tp.toFixed(2)),
+        halfTargetPrice: parseFloat((entry+(tp-entry)/2).toFixed(2)),
+        pnl: 0, pnlPct: 0, status: 'open', alerted: {},
+        addedAt: new Date().toISOString()
+      });
+    });
+  });
+
+  const client = {
+    id: STATE.nextClientId++,
+    name, capital, phone, email,
+    positions,
+    createdAt: new Date().toISOString(),
+    realizedPnl: 0
+  };
+  STATE.clients.push(client);
+
+  // Reset selections
+  NC_SELECTED.bc = []; NC_SELECTED.mc = []; NC_SELECTED.sc = [];
+
+  document.getElementById('client-count-badge').textContent = STATE.clients.length;
+  closeModal();
+  showToast(`✓ ${name} — ${positions.length} positions created`, 'green');
+  renderPage();
 }
 
 function closeModal() {
@@ -1346,6 +1650,15 @@ function addCustomStock(cat) {
   const sym = prompt(`Enter NSE symbol for ${cat} (e.g., TATAMOTORS):`);
   if (!sym) return;
   showToast(`${sym.toUpperCase()} — fetch from Angel SmartAPI in live version`, 'amber');
+}
+
+
+function filterStocks(q) {
+  const query = q.toUpperCase();
+  document.querySelectorAll('.stock-chip').forEach(chip => {
+    const sym = chip.dataset.sym || '';
+    chip.style.display = (!query || sym.includes(query)) ? '' : 'none';
+  });
 }
 
 function toggleStockChip(el, cat, sym) {
@@ -1492,6 +1805,60 @@ function formatNum(n) {
   if (Math.abs(num) >= 1000) return (num/1000).toFixed(1)+'K';
   return num.toFixed(0);
 }
+
+
+// ═══════════════════════════════════════════════════════════
+// REAL PRICE FEED — connects to local Python server
+// ═══════════════════════════════════════════════════════════
+const API_BASE = 'http://localhost:5000';
+
+async function fetchRealPrices() {
+  try {
+    const res = await fetch(API_BASE + '/api/market/all');
+    const data = await res.json();
+    const prices = data.prices;
+    
+    // Update all NSE_STOCKS with real prices
+    ['bluechip','midcap','smallcap'].forEach(cat => {
+      NSE_STOCKS[cat].forEach(stock => {
+        if (prices[stock.sym]) {
+          const oldPrice = stock.ltp;
+          stock.ltp = prices[stock.sym];
+          stock.change = parseFloat(((stock.ltp - oldPrice) / oldPrice * 100).toFixed(2));
+        }
+      });
+    });
+
+    // Update client positions too
+    STATE.clients.forEach(client => {
+      client.positions.forEach(pos => {
+        if (prices[pos.symbol]) {
+          pos.ltp = prices[pos.symbol];
+          updatePositionStatus(pos);
+        }
+      });
+    });
+
+    // Show connected status
+    const dot = document.getElementById('market-dot');
+    const txt = document.getElementById('market-text');
+    if (dot) dot.style.background = 'var(--green)';
+    if (txt) txt.textContent = '🟢 Live NSE Prices';
+    
+    updateLiveElements();
+    console.log('✓ Real prices loaded at', data.updated);
+  } catch(e) {
+    // Server not running — use simulated prices silently
+    console.log('Server offline — using simulated prices');
+    const dot = document.getElementById('market-dot');
+    if (dot) dot.style.background = 'var(--amber)';
+  }
+}
+
+// Fetch real prices every 60 seconds
+setInterval(fetchRealPrices, 60000);
+// Also fetch immediately on load
+setTimeout(fetchRealPrices, 2000);
 
 // ═══════════════════════════════════════════════════════════
 // INIT
