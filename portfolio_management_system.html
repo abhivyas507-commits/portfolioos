@@ -257,6 +257,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         Alerts
       </div>
+      <div class="nav-item" onclick="navigate('tradebot')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Trade Bot
+      </div>
       <div class="nav-item" onclick="navigate('settings')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Settings
@@ -288,9 +292,8 @@
 // ═══════════════════════════════════════════════════════════
 const NSE_STOCKS = {
   bluechip: [
-    // Nifty 50 — Large Cap
     {sym:'RELIANCE',name:'Reliance Industries',ltp:2987.45,change:0},
-    {sym:'TCS',name:'Tata Consultancy Svcs',ltp:4123.80,change:0},
+    {sym:'TCS',name:'Tata Consultancy Services',ltp:4123.80,change:0},
     {sym:'HDFCBANK',name:'HDFC Bank',ltp:1789.55,change:0},
     {sym:'INFY',name:'Infosys',ltp:1923.30,change:0},
     {sym:'ICICIBANK',name:'ICICI Bank',ltp:1456.70,change:0},
@@ -312,7 +315,7 @@ const NSE_STOCKS = {
     {sym:'NESTLEIND',name:'Nestle India',ltp:24567.80,change:0},
     {sym:'TECHM',name:'Tech Mahindra',ltp:1678.90,change:0},
     {sym:'POWERGRID',name:'Power Grid Corp',ltp:345.60,change:0},
-    {sym:'NTPC',name:'NTPC Limited',ltp:389.70,change:0},
+    {sym:'NTPC',name:'NTPC',ltp:389.70,change:0},
     {sym:'JSWSTEEL',name:'JSW Steel',ltp:987.60,change:0},
     {sym:'TATAMOTORS',name:'Tata Motors',ltp:1023.40,change:0},
     {sym:'TATASTEEL',name:'Tata Steel',ltp:167.80,change:0},
@@ -327,7 +330,6 @@ const NSE_STOCKS = {
     {sym:'HEROMOTOCO',name:'Hero MotoCorp',ltp:4567.80,change:0},
     {sym:'HINDALCO',name:'Hindalco Industries',ltp:678.90,change:0},
     {sym:'INDUSINDBK',name:'IndusInd Bank',ltp:1456.70,change:0},
-    {sym:'M&M',name:'Mahindra & Mahindra',ltp:3234.50,change:0},
     {sym:'ONGC',name:'ONGC',ltp:289.70,change:0},
     {sym:'SBILIFE',name:'SBI Life Insurance',ltp:1678.90,change:0},
     {sym:'TATACONSUM',name:'Tata Consumer',ltp:1123.40,change:0},
@@ -339,31 +341,56 @@ const NSE_STOCKS = {
     {sym:'UPL',name:'UPL Limited',ltp:567.80,change:0},
     {sym:'VEDL',name:'Vedanta',ltp:489.70,change:0},
     {sym:'HAL',name:'Hindustan Aeronautics',ltp:4567.80,change:0},
+    {sym:'M&M',name:'Mahindra & Mahindra',ltp:3234.50,change:0},
+    {sym:'BAJAJ-AUTO',name:'Bajaj Auto',ltp:9876.50,change:0},
+    {sym:'TATAPOWER',name:'Tata Power',ltp:345.60,change:0},
+    {sym:'GAIL',name:'GAIL India',ltp:234.50,change:0},
+    {sym:'IOCL',name:'Indian Oil Corp',ltp:145.60,change:0},
+    {sym:'BPCL',name:'BPCL',ltp:345.60,change:0},
+    {sym:'CONCOR',name:'Container Corp India',ltp:789.60,change:0},
+    {sym:'INDIGO',name:'IndiGo Airlines',ltp:4567.80,change:0},
+    {sym:'PAGEIND',name:'Page Industries (Jockey)',ltp:45678.90,change:0},
+    {sym:'MRF',name:'MRF Tyres',ltp:156789.00,change:0},
+    {sym:'BOSCHLTD',name:'Bosch India',ltp:34567.80,change:0},
+    {sym:'ABBOTINDIA',name:'Abbott India',ltp:28901.20,change:0},
+    {sym:'HONAUT',name:'Honeywell Automation',ltp:45678.90,change:0},
   ],
   midcap: [
-    // Nifty Midcap — Banking & Finance
+    {sym:'ZOMATO',name:'Zomato',ltp:267.80,change:0},
+    {sym:'IRCTC',name:'IRCTC',ltp:987.65,change:0},
+    {sym:'PERSISTENT',name:'Persistent Systems',ltp:6789.40,change:0},
+    {sym:'LTTS',name:'L&T Technology Services',ltp:5678.90,change:0},
+    {sym:'KPITTECH',name:'KPIT Technologies',ltp:1789.30,change:0},
+    {sym:'TATAELXSI',name:'Tata Elxsi',ltp:7890.10,change:0},
+    {sym:'COFORGE',name:'Coforge',ltp:8901.20,change:0},
+    {sym:'MPHASIS',name:'Mphasis',ltp:3456.70,change:0},
+    {sym:'OFSS',name:'Oracle Financial Services',ltp:9876.50,change:0},
+    {sym:'NAUKRI',name:'Info Edge (Naukri)',ltp:6789.40,change:0},
+    {sym:'POLICYBZR',name:'PB Fintech (PolicyBazaar)',ltp:890.10,change:0},
+    {sym:'PAYTM',name:'One 97 (Paytm)',ltp:789.60,change:0},
+    {sym:'HAPPSTMNDS',name:'Happiest Minds',ltp:890.10,change:0},
+    {sym:'TANLA',name:'Tanla Platforms',ltp:1234.50,change:0},
+    {sym:'LATENTVIEW',name:'LatentView Analytics',ltp:678.90,change:0},
     {sym:'BANDHANBNK',name:'Bandhan Bank',ltp:234.50,change:0},
     {sym:'FEDERALBNK',name:'Federal Bank',ltp:189.70,change:0},
     {sym:'IDFCFIRSTB',name:'IDFC First Bank',ltp:89.70,change:0},
     {sym:'AUBANK',name:'AU Small Finance Bank',ltp:789.60,change:0},
     {sym:'RBLBANK',name:'RBL Bank',ltp:234.50,change:0},
-    {sym:'CHOLAFIN',name:'Cholamandalam Finance',ltp:1456.70,change:0},
-    {sym:'MUTHOOTFIN',name:'Muthoot Finance',ltp:2345.60,change:0},
+    {sym:'PNB',name:'Punjab National Bank',ltp:123.40,change:0},
+    {sym:'CANBK',name:'Canara Bank',ltp:112.30,change:0},
+    {sym:'BANKBARODA',name:'Bank of Baroda',ltp:234.50,change:0},
     {sym:'RECLTD',name:'REC Limited',ltp:567.80,change:0},
     {sym:'PFC',name:'Power Finance Corp',ltp:489.70,change:0},
     {sym:'IRFC',name:'Indian Railway Finance',ltp:234.50,change:0},
     {sym:'ABCAPITAL',name:'Aditya Birla Capital',ltp:234.55,change:0},
+    {sym:'MUTHOOTFIN',name:'Muthoot Finance',ltp:2345.60,change:0},
+    {sym:'CHOLAFIN',name:'Cholamandalam Finance',ltp:1456.70,change:0},
     {sym:'MANAPPURAM',name:'Manappuram Finance',ltp:189.70,change:0},
-    // IT Midcap
-    {sym:'PERSISTENT',name:'Persistent Systems',ltp:6789.40,change:0},
-    {sym:'LTTS',name:'L&T Technology',ltp:5678.90,change:0},
-    {sym:'MPHASIS',name:'Mphasis',ltp:3456.70,change:0},
-    {sym:'COFORGE',name:'Coforge',ltp:8901.20,change:0},
-    {sym:'KPITTECH',name:'KPIT Technologies',ltp:1789.30,change:0},
-    {sym:'TATAELXSI',name:'Tata Elxsi',ltp:7890.10,change:0},
-    {sym:'ZOMATO',name:'Zomato',ltp:267.80,change:0},
-    {sym:'IRCTC',name:'IRCTC',ltp:987.65,change:0},
-    // Pharma Midcap
+    {sym:'SBICARD',name:'SBI Cards',ltp:789.60,change:0},
+    {sym:'HDFCAMC',name:'HDFC AMC',ltp:3456.70,change:0},
+    {sym:'ICICIGI',name:'ICICI Lombard',ltp:1678.90,change:0},
+    {sym:'ICICIPRULI',name:'ICICI Prudential Life',ltp:678.90,change:0},
+    {sym:'STARHEALTH',name:'Star Health Insurance',ltp:567.80,change:0},
     {sym:'AUROPHARMA',name:'Aurobindo Pharma',ltp:1234.50,change:0},
     {sym:'ALKEM',name:'Alkem Laboratories',ltp:5678.90,change:0},
     {sym:'TORNTPHARM',name:'Torrent Pharma',ltp:3456.70,change:0},
@@ -371,90 +398,162 @@ const NSE_STOCKS = {
     {sym:'GRANULES',name:'Granules India',ltp:456.70,change:0},
     {sym:'MAXHEALTH',name:'Max Healthcare',ltp:1023.40,change:0},
     {sym:'FORTIS',name:'Fortis Healthcare',ltp:567.80,change:0},
-    // Auto Midcap
+    {sym:'METROPOLIS',name:'Metropolis Healthcare',ltp:1890.10,change:0},
     {sym:'TVSMOTOR',name:'TVS Motor Company',ltp:2345.60,change:0},
     {sym:'ASHOKLEY',name:'Ashok Leyland',ltp:234.50,change:0},
     {sym:'BHARATFORG',name:'Bharat Forge',ltp:1456.70,change:0},
-    {sym:'MOTHERSON',name:'Motherson Sumi',ltp:189.70,change:0},
+    {sym:'MOTHERSON',name:'Samvardhana Motherson',ltp:189.70,change:0},
     {sym:'APOLLOTYRE',name:'Apollo Tyres',ltp:567.80,change:0},
-    {sym:'CEATLTD',name:'CEAT',ltp:3456.70,change:0},
     {sym:'BALKRISHNA',name:'Balkrishna Industries',ltp:3234.50,change:0},
-    // FMCG Midcap
+    {sym:'EXIDEIND',name:'Exide Industries',ltp:456.70,change:0},
     {sym:'DABUR',name:'Dabur India',ltp:623.40,change:0},
     {sym:'MARICO',name:'Marico',ltp:678.90,change:0},
+    {sym:'COLPAL',name:'Colgate-Palmolive',ltp:2890.10,change:0},
     {sym:'EMAMILTD',name:'Emami',ltp:789.60,change:0},
-    {sym:'GODREJCP',name:'Godrej Consumer',ltp:1456.70,change:0},
+    {sym:'GODREJCP',name:'Godrej Consumer Products',ltp:1456.70,change:0},
     {sym:'VBL',name:'Varun Beverages',ltp:1234.50,change:0},
     {sym:'JUBLFOOD',name:'Jubilant Foodworks',ltp:678.90,change:0},
-    // Realty
+    {sym:'TRENT',name:'Trent (Zara India)',ltp:4567.80,change:0},
+    {sym:'DMART',name:'Avenue Supermarts (DMart)',ltp:4567.80,change:0},
     {sym:'DLF',name:'DLF Limited',ltp:934.50,change:0},
     {sym:'GODREJPROP',name:'Godrej Properties',ltp:3456.70,change:0},
     {sym:'OBEROIRLTY',name:'Oberoi Realty',ltp:2345.60,change:0},
     {sym:'PRESTIGE',name:'Prestige Estates',ltp:2123.40,change:0},
     {sym:'BRIGADE',name:'Brigade Enterprises',ltp:1456.70,change:0},
     {sym:'LODHA',name:'Macrotech (Lodha)',ltp:1567.80,change:0},
-    // Capital Goods
+    {sym:'PHOENIXLTD',name:'Phoenix Mills',ltp:2345.60,change:0},
     {sym:'SIEMENS',name:'Siemens India',ltp:7890.10,change:0},
     {sym:'ABB',name:'ABB India',ltp:6789.40,change:0},
     {sym:'THERMAX',name:'Thermax',ltp:4567.80,change:0},
     {sym:'CUMMINSIND',name:'Cummins India',ltp:3456.70,change:0},
     {sym:'BEL',name:'Bharat Electronics',ltp:289.70,change:0},
+    {sym:'BEML',name:'BEML Limited',ltp:4567.80,change:0},
+    {sym:'HAL',name:'Hindustan Aeronautics',ltp:4567.80,change:0},
+    {sym:'POLYCAB',name:'Polycab India',ltp:7890.10,change:0},
+    {sym:'HAVELLS',name:'Havells India',ltp:1890.10,change:0},
+    {sym:'CROMPTON',name:'Crompton Greaves',ltp:456.80,change:0},
+    {sym:'KEI',name:'KEI Industries',ltp:4567.80,change:0},
   ],
   smallcap: [
-    // Chemicals
     {sym:'PIIND',name:'PI Industries',ltp:4234.55,change:0},
-    {sym:'FINEORG',name:'Fine Organic',ltp:6234.80,change:0},
+    {sym:'FINEORG',name:'Fine Organic Industries',ltp:6234.80,change:0},
     {sym:'DEEPAKNTR',name:'Deepak Nitrite',ltp:2890.10,change:0},
     {sym:'ATUL',name:'Atul Limited',ltp:8901.20,change:0},
-    {sym:'RALLIS',name:'Rallis India',ltp:456.70,change:0},
     {sym:'GALAXYSURF',name:'Galaxy Surfactants',ltp:3456.40,change:0},
     {sym:'PIDILITIND',name:'Pidilite Industries',ltp:3456.70,change:0},
-    // PSU & Defence
+    {sym:'ASTRAL',name:'Astral Poly Technik',ltp:2145.60,change:0},
+    {sym:'SURYAROSNI',name:'Surya Roshni',ltp:567.90,change:0},
     {sym:'RVNL',name:'Rail Vikas Nigam',ltp:489.70,change:0},
     {sym:'IRCON',name:'Ircon International',ltp:345.60,change:0},
     {sym:'NBCC',name:'NBCC India',ltp:189.70,change:0},
     {sym:'HUDCO',name:'HUDCO',ltp:234.50,change:0},
     {sym:'MAZAGON',name:'Mazagon Dock',ltp:4567.80,change:0},
-    {sym:'GRSE',name:'Garden Reach Shipbldrs',ltp:2345.60,change:0},
+    {sym:'GRSE',name:'Garden Reach Shipbuilders',ltp:2345.60,change:0},
     {sym:'COCHINSHIP',name:'Cochin Shipyard',ltp:2123.40,change:0},
-    {sym:'BEML',name:'BEML Limited',ltp:4567.80,change:0},
-    // Metals & Mining
     {sym:'HINDZINC',name:'Hindustan Zinc',ltp:456.70,change:0},
     {sym:'NMDC',name:'NMDC',ltp:234.50,change:0},
     {sym:'SAIL',name:'SAIL',ltp:145.60,change:0},
-    {sym:'NATIONALUM',name:'National Aluminium',ltp:234.50,change:0},
     {sym:'APLAPOLLO',name:'APL Apollo Tubes',ltp:1678.90,change:0},
     {sym:'RATNAMANI',name:'Ratnamani Metals',ltp:3456.70,change:0},
-    // IT Smallcap
     {sym:'DATAMATICS',name:'Datamatics Global',ltp:778.40,change:0},
-    {sym:'HAPPSTMNDS',name:'Happiest Minds',ltp:890.10,change:0},
-    {sym:'TANLA',name:'Tanla Platforms',ltp:1234.50,change:0},
-    {sym:'ROUTE',name:'Route Mobile',ltp:1890.10,change:0},
-    {sym:'LATENTVIEW',name:'LatentView Analytics',ltp:678.90,change:0},
-    {sym:'INTELLECT',name:'Intellect Design',ltp:1023.40,change:0},
-    // Cement Smallcap
     {sym:'JKCEMENT',name:'JK Cement',ltp:4567.80,change:0},
     {sym:'RAMCOCEM',name:'Ramco Cements',ltp:1023.40,change:0},
     {sym:'DALMIABL',name:'Dalmia Bharat',ltp:2345.60,change:0},
-    // Consumer
-    {sym:'SURYAROSNI',name:'Surya Roshni',ltp:567.90,change:0},
-    {sym:'ASTRAL',name:'Astral Poly Technik',ltp:2145.60,change:0},
-    {sym:'POLYCAB',name:'Polycab India',ltp:7890.10,change:0},
-    {sym:'HAVELLS',name:'Havells India',ltp:1890.10,change:0},
-    {sym:'CROMPTON',name:'Crompton Greaves',ltp:456.80,change:0},
-    {sym:'KEI',name:'KEI Industries',ltp:4567.80,change:0},
-    // Finance Smallcap
+    {sym:'JSWENERGY',name:'JSW Energy',ltp:567.80,change:0},
+    {sym:'ADANIGREEN',name:'Adani Green Energy',ltp:2345.60,change:0},
+    {sym:'NHPC',name:'NHPC',ltp:89.70,change:0},
+    {sym:'SJVN',name:'SJVN',ltp:45.60,change:0},
+    {sym:'INDHOTEL',name:'Indian Hotels (Taj)',ltp:567.80,change:0},
+    {sym:'LEMONTRE',name:'Lemon Tree Hotels',ltp:145.60,change:0},
+    {sym:'TATACHEM',name:'Tata Chemicals',ltp:1123.40,change:0},
     {sym:'UJJIVANSFB',name:'Ujjivan Small Finance',ltp:45.60,change:0},
     {sym:'EQUITASBNK',name:'Equitas Small Finance',ltp:89.70,change:0},
     {sym:'CREDITACC',name:'Credit Access Grameen',ltp:1234.50,change:0},
     {sym:'SPANDANA',name:'Spandana Sphoorty',ltp:890.10,change:0},
-    // Energy
-    {sym:'JSWENERGY',name:'JSW Energy',ltp:567.80,change:0},
-    {sym:'ADANIGREEN',name:'Adani Green Energy',ltp:2345.60,change:0},
-    {sym:'ADANITRANS',name:'Adani Transmission',ltp:1023.40,change:0},
-    {sym:'INDIGRID',name:'IndiGrid',ltp:189.70,change:0},
+    {sym:'DELHIVERY',name:'Delhivery',ltp:456.70,change:0},
+    {sym:'BLUEDART',name:'Blue Dart Express',ltp:7890.10,change:0},
+    {sym:'ZEEL',name:'Zee Entertainment',ltp:234.50,change:0},
+    {sym:'SUNTV',name:'Sun TV Network',ltp:789.60,change:0},
+    {sym:'PVR',name:'PVR INOX',ltp:1678.90,change:0},
+    {sym:'HFCL',name:'HFCL',ltp:89.70,change:0},
+    {sym:'BALRAMCHIN',name:'Balrampur Chini',ltp:567.80,change:0},
+    {sym:'DHANUKA',name:'Dhanuka Agritech',ltp:1234.50,change:0},
+    {sym:'KRBL',name:'KRBL (India Gate)',ltp:345.60,change:0},
+    {sym:'RAYMOND',name:'Raymond',ltp:2345.60,change:0},
+    {sym:'TRIDENT',name:'Trident',ltp:45.60,change:0},
+    {sym:'KALYANKJIL',name:'Kalyan Jewellers',ltp:567.80,change:0},
+    {sym:'SENCO',name:'Senco Gold',ltp:1234.50,change:0},
+    {sym:'RELAXO',name:'Relaxo Footwears',ltp:890.10,change:0},
+    {sym:'BATA',name:'Bata India',ltp:1678.90,change:0},
+    {sym:'LATENTVIEW',name:'LatentView Analytics',ltp:678.90,change:0},
+    {sym:'INTELLECT',name:'Intellect Design Arena',ltp:1023.40,change:0},
+    {sym:'NEWGEN',name:'Newgen Software',ltp:1234.50,change:0},
+    {sym:'TATATECH',name:'Tata Technologies',ltp:890.10,change:0},
+    {sym:'WAAREEENER',name:'Waaree Energies',ltp:2345.60,change:0},
+    {sym:'MIDHANI',name:'Mishra Dhatu Nigam',ltp:456.70,change:0},
+    {sym:'ENGINERSIN',name:'Engineers India',ltp:234.50,change:0},
+    {sym:'RITES',name:'RITES Limited',ltp:567.80,change:0},
+    {sym:'NESCO',name:'Nesco',ltp:890.10,change:0},
+    {sym:'CAMPUS',name:'Campus Activewear',ltp:345.60,change:0},
+    {sym:'VEDANT',name:'Vedant Fashions (Manyavar)',ltp:1234.50,change:0},
   ]
 };
+
+
+// ═══════════════════════════════════════════════════════════
+// DYNAMIC NSE STOCK FETCHER
+// Fetches complete NSE stock list automatically
+// ═══════════════════════════════════════════════════════════
+let ALL_NSE_STOCKS_DYNAMIC = [];
+let STOCKS_LOADED = false;
+
+async function fetchAllNSEStocks() {
+  try {
+    // Fetch from our server which gets from NSE India
+    const res = await fetch(API_BASE + '/api/market/all');
+    const data = await res.json();
+    if (data.prices) {
+      ALL_NSE_STOCKS_DYNAMIC = Object.entries(data.prices).map(([sym, ltp]) => ({
+        sym, ltp: parseFloat(ltp), name: sym
+      }));
+      STOCKS_LOADED = true;
+      console.log(`✓ Loaded ${ALL_NSE_STOCKS_DYNAMIC.length} NSE stocks`);
+
+      // Also update NSE_STOCKS prices with real prices
+      ['bluechip','midcap','smallcap'].forEach(cat => {
+        NSE_STOCKS[cat].forEach(stock => {
+          if (data.prices[stock.sym]) {
+            stock.ltp = parseFloat(data.prices[stock.sym]);
+          }
+        });
+      });
+    }
+  } catch(e) {
+    console.log('Using built-in stock list');
+    // Fall back to built-in stocks
+    ALL_NSE_STOCKS_DYNAMIC = [
+      ...NSE_STOCKS.bluechip,
+      ...NSE_STOCKS.midcap,
+      ...NSE_STOCKS.smallcap
+    ];
+    STOCKS_LOADED = true;
+  }
+}
+
+// Search stocks from full dynamic list
+function searchAllStocks(query) {
+  const q = query.toUpperCase();
+  if (!q) return [];
+  return ALL_NSE_STOCKS_DYNAMIC
+    .filter(s => s.sym.includes(q) || (s.name||'').toUpperCase().includes(q))
+    .slice(0, 20);
+}
+
+// Get stock LTP from dynamic list
+function getStockLTP(sym) {
+  const s = ALL_NSE_STOCKS_DYNAMIC.find(x => x.sym === sym);
+  return s ? s.ltp : 0;
+}
 
 let STATE = {
   page: 'dashboard',
@@ -660,6 +759,7 @@ function renderPage() {
     dashboard: renderDashboard,
     clients: renderClients,
     positions: renderPositions,
+    tradebot: renderTradeBotPage,
     portfolio: renderPortfolio,
     risk: renderRisk,
     alerts: renderAlerts,
@@ -786,7 +886,7 @@ function renderDashboard() {
       <div class="table-wrap">
         <table>
           <tr><th>Symbol</th><th>Name</th><th>LTP</th><th>Change %</th><th>Category</th></tr>
-          ${topMovers.slice(0,20).map(s => {
+          ${topMovers.slice(0,25).map(s => {
             const cat = NSE_STOCKS.bluechip.includes(s)?'Bluechip':NSE_STOCKS.midcap.includes(s)?'Midcap':'Smallcap';
             const badge = {Bluechip:'badge-blue',Midcap:'badge-teal',Smallcap:'badge-purple'}[cat];
             return `<tr>
@@ -1417,7 +1517,7 @@ function openNewClientModal() {
         </div>
         <div id="bc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
           ${allBluechip.map(s => `
-          <div class="nc-chip" data-sym="${s.sym}" data-cat="bc" data-ltp="${s.ltp}"
+          <div class="nc-chip" data-sym="${s.sym}" data-name="${s.name||s.sym}" data-cat="bc" data-ltp="${s.ltp}"
             onclick="ncToggleStock(this,'bc')"
             style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
             <span style="font-weight:600">${s.sym}</span>
@@ -1434,7 +1534,7 @@ function openNewClientModal() {
         </div>
         <div id="mc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
           ${allMidcap.map(s => `
-          <div class="nc-chip" data-sym="${s.sym}" data-cat="mc" data-ltp="${s.ltp}"
+          <div class="nc-chip" data-sym="${s.sym}" data-name="${s.name||s.sym}" data-cat="mc" data-ltp="${s.ltp}"
             onclick="ncToggleStock(this,'mc')"
             style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
             <span style="font-weight:600">${s.sym}</span>
@@ -1451,7 +1551,7 @@ function openNewClientModal() {
         </div>
         <div id="sc-stocks" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--surface2);border-radius:8px">
           ${allSmallcap.map(s => `
-          <div class="nc-chip" data-sym="${s.sym}" data-cat="sc" data-ltp="${s.ltp}"
+          <div class="nc-chip" data-sym="${s.sym}" data-name="${s.name||s.sym}" data-cat="sc" data-ltp="${s.ltp}"
             onclick="ncToggleStock(this,'sc')"
             style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:12px;transition:all 0.15s">
             <span style="font-weight:600">${s.sym}</span>
@@ -1503,6 +1603,61 @@ function ncToggleStock(el, cat) {
 
   const countEl = document.getElementById(`${cat}-count`);
   if (countEl) countEl.textContent = list.length;
+}
+
+
+function ncDynamicSearch(q) {
+  const dd = document.getElementById('nc-dynamic-results');
+  if (!dd) return;
+  
+  // Also filter existing chips
+  filterStocks(q);
+  
+  if (!q || q.length < 1) { dd.style.display = 'none'; return; }
+  
+  const query = q.toUpperCase();
+  
+  // Search from dynamic list first
+  const dynamicMatches = ALL_NSE_STOCKS_DYNAMIC
+    .filter(s => s.sym.includes(query) || (s.name||'').toUpperCase().includes(query))
+    .slice(0, 15);
+  
+  if (!dynamicMatches.length) { dd.style.display = 'none'; return; }
+  
+  dd.innerHTML = dynamicMatches.map(s => `
+    <div onclick="ncAddCustomStockToModal('${s.sym}', ${s.ltp})"
+      style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"
+      onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background=''">
+      <span><b>${s.sym}</b> <span style="color:var(--text3);font-size:11px">${s.name||''}</span></span>
+      <span style="color:var(--accent)">₹${parseFloat(s.ltp).toFixed(2)}</span>
+    </div>`).join('');
+  dd.style.display = 'block';
+}
+
+function ncAddCustomStockToModal(sym, ltp) {
+  // Add to selected stocks
+  const dd = document.getElementById('nc-dynamic-results');
+  if (dd) dd.style.display = 'none';
+  const inp = document.getElementById('nc-stock-search');
+  if (inp) inp.value = '';
+  
+  // Show added confirmation
+  showToast(`${sym} added to selection — choose category`, 'green');
+  
+  // Add to NC_SELECTED if category has space
+  const cats = ['bc','mc','sc'];
+  for (const cat of cats) {
+    if (NC_SELECTED[cat].length < 5) {
+      if (!NC_SELECTED[cat].find(x => x.sym === sym)) {
+        NC_SELECTED[cat].push({sym, ltp: parseFloat(ltp)});
+        const countEl = document.getElementById(`${cat}-count`);
+        if (countEl) countEl.textContent = NC_SELECTED[cat].length;
+        const colors = {bc:'var(--accent)',mc:'var(--teal)',sc:'var(--purple)'};
+        showToast(`${sym} added to ${{bc:'Bluechip',mc:'Midcap',sc:'Smallcap'}[cat]}`, 'green');
+        break;
+      }
+    }
+  }
 }
 
 function ncFilterStocks(query) {
@@ -1655,9 +1810,10 @@ function addCustomStock(cat) {
 
 function filterStocks(q) {
   const query = q.toUpperCase();
-  document.querySelectorAll('.stock-chip').forEach(chip => {
-    const sym = chip.dataset.sym || '';
-    chip.style.display = (!query || sym.includes(query)) ? '' : 'none';
+  document.querySelectorAll('.nc-chip').forEach(chip => {
+    const sym = (chip.dataset.sym || '').toUpperCase();
+    const name = (chip.dataset.name || '').toUpperCase();
+    chip.style.display = (!query || sym.includes(query) || name.includes(query)) ? '' : 'none';
   });
 }
 
@@ -1810,7 +1966,10 @@ function formatNum(n) {
 // ═══════════════════════════════════════════════════════════
 // REAL PRICE FEED — connects to local Python server
 // ═══════════════════════════════════════════════════════════
-const API_BASE = 'http://localhost:5000';
+// Auto-detect: use Railway URL in production, localhost in development
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : window.location.origin;
 
 async function fetchRealPrices() {
   try {
@@ -1860,10 +2019,411 @@ setInterval(fetchRealPrices, 60000);
 // Also fetch immediately on load
 setTimeout(fetchRealPrices, 2000);
 
+
+// ═══════════════════════════════════════════════════════════
+// TRADE BOT STATE
+// ═══════════════════════════════════════════════════════════
+let TRADES = [];
+let TRADE_ID = 1;
+let TG_TOKEN = localStorage.getItem('tg_token') || '';
+let TG_CHAT_ID = localStorage.getItem('tg_chat_id') || '';
+
+// All NSE symbols for search
+const ALL_NSE_SYMBOLS = [
+  "RELIANCE","TCS","HDFCBANK","INFY","ICICIBANK","HINDUNILVR","ITC","SBIN",
+  "BHARTIARTL","KOTAKBANK","LT","HCLTECH","AXISBANK","ASIANPAINT","MARUTI",
+  "SUNPHARMA","TITAN","ULTRACEMCO","BAJFINANCE","WIPRO","NESTLEIND","TECHM",
+  "POWERGRID","NTPC","JSWSTEEL","TATAMOTORS","TATASTEEL","ADANIENT","ADANIPORTS",
+  "BAJAJFINSV","DRREDDY","CIPLA","EICHERMOT","BRITANNIA","DIVISLAB","HEROMOTOCO",
+  "HINDALCO","INDUSINDBK","ONGC","SBILIFE","TATACONSUM","COALINDIA","APOLLOHOSP",
+  "BPCL","GRASIM","HDFCLIFE","UPL","VEDL","HAL","M&M","ZOMATO","IRCTC",
+  "PERSISTENT","LTTS","KPITTECH","TATAELXSI","BANDHANBNK","FEDERALBNK",
+  "RECLTD","PFC","IRFC","AUROPHARMA","ALKEM","TVSMOTOR","ASHOKLEY","DABUR",
+  "MARICO","DLF","GODREJPROP","SIEMENS","ABB","BEL","PIIND","POLYCAB",
+  "HAVELLS","CROMPTON","TATAPOWER","GAIL","IOCL","INDIGO","PNB","BANKBARODA",
+  "CHOLAFIN","MUTHOOTFIN","APOLLOTYRE","BALKRISHNA","BHARATFORG","COLPAL",
+  "GODREJCP","VBL","JUBLFOOD","HINDZINC","NMDC","SAIL","COFORGE","MPHASIS",
+  "OFSS","NAUKRI","JKCEMENT","RAMCOCEM","SURYAROSNI","ASTRAL","KEI","NBCC",
+  "MAZAGON","GRSE","DEEPAKNTR","PIDILITIND","DATAMATICS","TANLA","TRENT",
+  "DMART","FINEORG","RVNL","ADANIGREEN","JSWENERGY","NHPC","HUDCO","BEML",
+  "ATUL","GALAXYSURF","HAPPSTMNDS","LATENTVIEW","DALMIABL","INDHOTEL",
+  "BAJAJ-AUTO","TATACHEM","PAGEIND","SBICARD","COCHINSHIP","DEEPAKNTR",
+  "IDFCFIRSTB","AUBANK","RBLBANK","ABCAPITAL","MANAPPURAM","LICHSGFIN",
+  "TORNTPHARM","IPCALAB","LAURUSLABS","GRANULES","MAXHEALTH","FORTIS",
+  "MOTHERSON","BOSCHLTD","EXIDEIND","AMARAJABAT","MRF","CEATLTD","MINDAIND",
+  "EMAMILTD","RADICO","MCDOWELL-N","DEVYANI","WESTLIFE","RELAXO","BATA",
+  "MOIL","APLAPOLLO","RATNAMANI","PHOENIXLTD","SOBHA","BRIGADE","PRESTIGE",
+  "LODHA","OBEROIRLTY","THERMAX","CUMMINSIND","GRINDWELL","TIMKEN","KSB",
+  "ELGIEQUIP","TRITURBINE","MIDHANI","ENGINERSIN","RVNL","IRCON","HFCL",
+  "TEJASNET","ZEEL","SUNTV","PVR","BLUEDART","DELHIVERY","CONCOR",
+  "BALRAMCHIN","DHANUKA","KRBL","ICICIGI","ICICIPRULI","HDFCAMC","STARHEALTH",
+  "NIACL","GICRE","INDHOTEL","EIHOTEL","LEMONTRE","CHALET",
+];
+
+async function sendTelegramAlert(message) {
+  if (!TG_TOKEN || !TG_CHAT_ID) return false;
+  try {
+    const url = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: TG_CHAT_ID, text: message, parse_mode: 'HTML'})
+    });
+    return resp.ok;
+  } catch(e) {
+    return false;
+  }
+}
+
+function checkTradeAlerts() {
+  TRADES.forEach(trade => {
+    if (trade.status !== 'active') return;
+    const ltp = NSE_STOCKS.bluechip.concat(NSE_STOCKS.midcap, NSE_STOCKS.smallcap)
+      .find(s => s.sym === trade.symbol)?.ltp || PRICES_CACHE[trade.symbol] || 0;
+    if (!ltp) return;
+
+    trade.ltp = ltp;
+    trade.pnl = (ltp - trade.entry) * trade.qty;
+    trade.pnlPct = ((ltp - trade.entry) / trade.entry) * 100;
+
+    if (!trade.alerted) trade.alerted = {};
+
+    // Full SL
+    if (ltp <= trade.sl && !trade.alerted.fullSL) {
+      trade.alerted.fullSL = true;
+      const msg = `🔴 <b>FULL STOP LOSS HIT</b>\n\n📈 ${trade.symbol}\n💰 LTP: ₹${ltp.toFixed(2)}\n🎯 SL: ₹${trade.sl}\n📉 Entry: ₹${trade.entry}\n💸 P&L: ₹${trade.pnl.toFixed(0)} (${trade.pnlPct.toFixed(2)}%)\n\n❌ Exit now!`;
+      sendTelegramAlert(msg);
+      showAlert(`🔴 Full SL Hit: ${trade.symbol}`, `₹${ltp.toFixed(2)} ≤ ₹${trade.sl}`, 'red');
+      trade.status = 'sl_hit';
+    }
+    // 50% SL
+    else if (ltp <= trade.halfSL && !trade.alerted.halfSL) {
+      trade.alerted.halfSL = true;
+      const msg = `⚠️ <b>50% STOP LOSS ALERT</b>\n\n📈 ${trade.symbol}\n💰 LTP: ₹${ltp.toFixed(2)}\n⚠️ 50% SL: ₹${trade.halfSL.toFixed(2)}\n🎯 Full SL: ₹${trade.sl}`;
+      sendTelegramAlert(msg);
+      showAlert(`⚠️ 50% SL: ${trade.symbol}`, `Approaching stop loss`, 'amber');
+    }
+    // Full TP
+    if (ltp >= trade.tp && !trade.alerted.fullTP) {
+      trade.alerted.fullTP = true;
+      const msg = `🎯 <b>FULL TARGET ACHIEVED!</b>\n\n📈 ${trade.symbol}\n💰 LTP: ₹${ltp.toFixed(2)}\n🎯 Target: ₹${trade.tp}\n💰 P&L: ₹${trade.pnl.toFixed(0)} (${trade.pnlPct.toFixed(2)}%)\n\n🏆 Book profits!`;
+      sendTelegramAlert(msg);
+      showAlert(`🎯 Full Target: ${trade.symbol}`, `₹${ltp.toFixed(2)} ≥ ₹${trade.tp}`, 'green');
+      trade.status = 'tp_hit';
+    }
+    // 50% TP
+    else if (ltp >= trade.halfTP && !trade.alerted.halfTP) {
+      trade.alerted.halfTP = true;
+      const msg = `✅ <b>50% TARGET REACHED!</b>\n\n📈 ${trade.symbol}\n💰 LTP: ₹${ltp.toFixed(2)}\n✅ 50% Target: ₹${trade.halfTP.toFixed(2)}\n🎯 Full Target: ₹${trade.tp}`;
+      sendTelegramAlert(msg);
+      showAlert(`✅ 50% Target: ${trade.symbol}`, `Half target reached`, 'green');
+    }
+  });
+}
+
+// Price cache for trade bot
+const PRICES_CACHE = {};
+
+// Check alerts every 30 seconds
+setInterval(() => {
+  // Update price cache from NSE_STOCKS
+  NSE_STOCKS.bluechip.concat(NSE_STOCKS.midcap, NSE_STOCKS.smallcap).forEach(s => {
+    PRICES_CACHE[s.sym] = s.ltp;
+  });
+  checkTradeAlerts();
+}, 30000);
+
+// ─────────────────────────────────────────────
+// TRADE BOT PAGE
+// ─────────────────────────────────────────────
+function renderTradeBotPage() {
+  return `
+  <div class="header">
+    <div>
+      <div class="page-title">🔔 Trade Alert Bot</div>
+      <div class="page-sub">Enter your trades — get Telegram alerts on SL & Target</div>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- Telegram Setup -->
+    <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:16px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">📱 Telegram Bot Setup</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.8">
+        1. Open Telegram → search <b>@BotFather</b> → /newbot → create bot → copy TOKEN<br>
+        2. Message your bot → get Chat ID from: <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">api.telegram.org/bot{TOKEN}/getUpdates</code>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+        <div style="flex:1;min-width:200px">
+          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">BOT TOKEN</label>
+          <input id="tg-token-input" placeholder="7123456789:AAFxxxxxxxx" value="${TG_TOKEN}" style="font-size:12px">
+        </div>
+        <div style="flex:1;min-width:150px">
+          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">CHAT ID</label>
+          <input id="tg-chatid-input" placeholder="Your Telegram Chat ID" value="${TG_CHAT_ID}" style="font-size:12px">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn btn-success" onclick="saveTelegramConfig()">Save & Test</button>
+        </div>
+      </div>
+      <div id="tg-status-msg" style="font-size:12px"></div>
+    </div>
+
+    <!-- Add Trade -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><div class="card-title">➕ Add New Trade</div></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px">
+          <div class="form-group">
+            <label>NSE Symbol *</label>
+            <input id="tb-sym" placeholder="RELIANCE, TCS..." oninput="tbSearchSymbol(this.value)" autocomplete="off" style="position:relative">
+            <div id="tb-sym-dropdown" style="position:absolute;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;max-height:180px;overflow-y:auto;z-index:999;display:none;min-width:200px"></div>
+          </div>
+          <div class="form-group">
+            <label>Qty</label>
+            <input id="tb-qty" type="number" value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label>Entry Price ₹ *</label>
+            <input id="tb-entry" type="number" step="0.05" placeholder="2987.45" oninput="tbCalcLevels()">
+          </div>
+          <div class="form-group">
+            <label>Stop Loss ₹ *</label>
+            <input id="tb-sl" type="number" step="0.05" placeholder="2900.00" oninput="tbCalcLevels()">
+          </div>
+          <div class="form-group">
+            <label>Target ₹ *</label>
+            <input id="tb-tp" type="number" step="0.05" placeholder="3100.00" oninput="tbCalcLevels()">
+          </div>
+          <div class="form-group">
+            <label>SL % (auto)</label>
+            <input id="tb-sl-pct" type="number" step="0.5" placeholder="3" oninput="tbCalcFromPct()">
+          </div>
+          <div class="form-group">
+            <label>TP % (auto)</label>
+            <input id="tb-tp-pct" type="number" step="0.5" placeholder="6" oninput="tbCalcFromPct()">
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="tb-preview" style="display:none;background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Your 4 Alert Levels</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">
+            <div style="background:var(--surface);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">🔴 Full SL</div>
+              <div style="font-size:13px;font-weight:600;color:var(--red)" id="tb-p-sl">—</div>
+            </div>
+            <div style="background:var(--surface);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">⚠️ 50% SL</div>
+              <div style="font-size:13px;font-weight:600;color:#ff6b6b" id="tb-p-hsl">—</div>
+            </div>
+            <div style="background:var(--surface);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">📍 Entry</div>
+              <div style="font-size:13px;font-weight:600" id="tb-p-entry">—</div>
+            </div>
+            <div style="background:var(--surface);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">✅ 50% TP</div>
+              <div style="font-size:13px;font-weight:600;color:#52d470" id="tb-p-htp">—</div>
+            </div>
+            <div style="background:var(--surface);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-bottom:3px">🎯 Full TP</div>
+              <div style="font-size:13px;font-weight:600;color:var(--green)" id="tb-p-tp">—</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text3);display:flex;gap:20px;flex-wrap:wrap">
+            <span>SL: <span id="tb-p-sl-pct" style="color:var(--red)">—</span></span>
+            <span>TP: <span id="tb-p-tp-pct" style="color:var(--green)">—</span></span>
+            <span>R:R: <span id="tb-p-rr" style="color:var(--accent)">—</span></span>
+            <span>Max Loss: <span id="tb-p-loss" style="color:var(--red)">—</span></span>
+            <span>Max Gain: <span id="tb-p-gain" style="color:var(--green)">—</span></span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="tbAddTrade()" style="width:100%;justify-content:center;padding:12px">
+          🔔 Start Monitoring This Trade
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Trades -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 Active Trades (${TRADES.filter(t=>t.status==='active').length} active)</div>
+      </div>
+      <div class="card-body">
+        ${TRADES.length === 0 
+          ? '<div style="text-align:center;padding:40px;color:var(--text3)">No trades yet. Add your first trade above.</div>'
+          : TRADES.map(t => {
+              const pnlClass = (t.pnl||0) >= 0 ? 'up' : 'down';
+              const progress = Math.min(100, Math.max(0, ((t.ltp||t.entry) - t.sl) / (t.tp - t.sl) * 100));
+              const statusBadge = {active:'<span class="badge badge-blue">Active</span>',sl_hit:'<span class="badge badge-red">SL Hit</span>',tp_hit:'<span class="badge badge-green">Target Hit</span>'}[t.status]||'';
+              return `
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                  <div>
+                    <span style="font-size:16px;font-weight:700">${t.symbol}</span>
+                    <span style="font-size:11px;color:var(--text3);margin-left:8px">${t.qty} shares · Added ${t.addedAt}</span>
+                    ${statusBadge}
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:18px;font-weight:700">₹${(t.ltp||t.entry).toFixed(2)}</span>
+                    <button class="btn btn-danger" style="font-size:11px;padding:4px 8px" onclick="tbRemoveTrade('${t.id}')">Remove</button>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">
+                  <div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center">
+                    <div style="font-size:9px;color:var(--text3)">🔴 SL</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--red)">₹${t.sl}</div>
+                  </div>
+                  <div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center">
+                    <div style="font-size:9px;color:var(--text3)">⚠️ 50%SL</div>
+                    <div style="font-size:12px;font-weight:600;color:#ff6b6b">₹${t.halfSL.toFixed(2)}</div>
+                  </div>
+                  <div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center">
+                    <div style="font-size:9px;color:var(--text3)">📍 Entry</div>
+                    <div style="font-size:12px;font-weight:600">₹${t.entry}</div>
+                  </div>
+                  <div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center">
+                    <div style="font-size:9px;color:var(--text3)">✅ 50%TP</div>
+                    <div style="font-size:12px;font-weight:600;color:#52d470">₹${t.halfTP.toFixed(2)}</div>
+                  </div>
+                  <div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center">
+                    <div style="font-size:9px;color:var(--text3)">🎯 TP</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--green)">₹${t.tp}</div>
+                  </div>
+                </div>
+                <div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden;margin-bottom:8px">
+                  <div style="height:100%;width:${progress}%;background:${(t.ltp||t.entry)>=t.entry?'var(--green)':'var(--red)'};border-radius:3px;transition:width 0.5s"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:12px">
+                  <span style="color:var(--text3)">SL: -${t.slPct}% | TP: +${t.tpPct}% | R:R 1:${(t.tpPct/t.slPct).toFixed(1)}</span>
+                  <span class="${pnlClass}" style="font-weight:600">${(t.pnl||0)>=0?'+':''}₹${(t.pnl||0).toFixed(0)} (${(t.pnlPct||0).toFixed(2)}%)</span>
+                </div>
+              </div>`;
+            }).join('')
+        }
+      </div>
+    </div>
+  </div>`;
+}
+
+function saveTelegramConfig() {
+  TG_TOKEN = document.getElementById('tg-token-input')?.value?.trim() || '';
+  TG_CHAT_ID = document.getElementById('tg-chatid-input')?.value?.trim() || '';
+  localStorage.setItem('tg_token', TG_TOKEN);
+  localStorage.setItem('tg_chat_id', TG_CHAT_ID);
+  const el = document.getElementById('tg-status-msg');
+  if (!TG_TOKEN || !TG_CHAT_ID) { if(el) el.innerHTML = '<span style="color:var(--red)">Please enter both Token and Chat ID</span>'; return; }
+  sendTelegramAlert('✅ PortfolioOS Trade Alert Bot connected! You will receive SL and Target alerts here.').then(ok => {
+    if(el) el.innerHTML = ok ? '<span style="color:var(--green)">✅ Connected! Check your Telegram.</span>' : '<span style="color:var(--red)">❌ Failed — check token and chat ID</span>';
+  });
+}
+
+function tbSearchSymbol(q) {
+  const dd = document.getElementById('tb-sym-dropdown');
+  if (!q || q.length < 1) { if(dd) dd.style.display='none'; return; }
+  const matches = ALL_NSE_SYMBOLS.filter(s => s.includes(q.toUpperCase())).slice(0, 10);
+  if (!matches.length) { if(dd) dd.style.display='none'; return; }
+  if(dd) {
+    dd.innerHTML = matches.map(s => `<div onclick="tbSelectSym('${s}')" style="padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)">${s}</div>`).join('');
+    dd.style.display = 'block';
+  }
+}
+
+function tbSelectSym(sym) {
+  const inp = document.getElementById('tb-sym');
+  const dd = document.getElementById('tb-sym-dropdown');
+  if(inp) inp.value = sym;
+  if(dd) dd.style.display = 'none';
+  // Auto fill LTP as entry
+  const allStocks = NSE_STOCKS.bluechip.concat(NSE_STOCKS.midcap, NSE_STOCKS.smallcap);
+  const stock = allStocks.find(s => s.sym === sym);
+  if (stock) {
+    const entryInput = document.getElementById('tb-entry');
+    if(entryInput && !entryInput.value) { entryInput.value = stock.ltp.toFixed(2); tbCalcLevels(); }
+  }
+}
+
+function tbCalcLevels() {
+  const entry = parseFloat(document.getElementById('tb-entry')?.value);
+  const sl = parseFloat(document.getElementById('tb-sl')?.value);
+  const tp = parseFloat(document.getElementById('tb-tp')?.value);
+  const qty = parseInt(document.getElementById('tb-qty')?.value) || 1;
+  if (!entry || !sl || !tp) { const p = document.getElementById('tb-preview'); if(p) p.style.display='none'; return; }
+  const hsl = entry - (entry-sl)/2;
+  const htp = entry + (tp-entry)/2;
+  const slPct = ((entry-sl)/entry*100).toFixed(2);
+  const tpPct = ((tp-entry)/entry*100).toFixed(2);
+  const rr = (tpPct/slPct).toFixed(1);
+  const setEl = (id,val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
+  setEl('tb-p-sl',`₹${sl.toFixed(2)}`); setEl('tb-p-hsl',`₹${hsl.toFixed(2)}`);
+  setEl('tb-p-entry',`₹${entry.toFixed(2)}`); setEl('tb-p-htp',`₹${htp.toFixed(2)}`);
+  setEl('tb-p-tp',`₹${tp.toFixed(2)}`); setEl('tb-p-sl-pct',`-${slPct}%`);
+  setEl('tb-p-tp-pct',`+${tpPct}%`); setEl('tb-p-rr',`1:${rr}`);
+  setEl('tb-p-loss',`₹${((entry-sl)*qty).toFixed(0)}`); setEl('tb-p-gain',`₹${((tp-entry)*qty).toFixed(0)}`);
+  const p = document.getElementById('tb-preview'); if(p) p.style.display='block';
+}
+
+function tbCalcFromPct() {
+  const entry = parseFloat(document.getElementById('tb-entry')?.value);
+  const slPct = parseFloat(document.getElementById('tb-sl-pct')?.value);
+  const tpPct = parseFloat(document.getElementById('tb-tp-pct')?.value);
+  if (!entry) return;
+  if (slPct) { const e=document.getElementById('tb-sl'); if(e) e.value=(entry*(1-slPct/100)).toFixed(2); }
+  if (tpPct) { const e=document.getElementById('tb-tp'); if(e) e.value=(entry*(1+tpPct/100)).toFixed(2); }
+  tbCalcLevels();
+}
+
+function tbAddTrade() {
+  const sym = document.getElementById('tb-sym')?.value?.trim()?.toUpperCase();
+  const entry = parseFloat(document.getElementById('tb-entry')?.value);
+  const sl = parseFloat(document.getElementById('tb-sl')?.value);
+  const tp = parseFloat(document.getElementById('tb-tp')?.value);
+  const qty = parseInt(document.getElementById('tb-qty')?.value) || 1;
+  if (!sym) { showToast('Enter a stock symbol', 'amber'); return; }
+  if (!entry || !sl || !tp) { showToast('Enter Entry, SL and Target', 'amber'); return; }
+  if (sl >= entry) { showToast('SL must be below Entry price', 'amber'); return; }
+  if (tp <= entry) { showToast('Target must be above Entry price', 'amber'); return; }
+  const slPct = ((entry-sl)/entry*100).toFixed(2);
+  const tpPct = ((tp-entry)/entry*100).toFixed(2);
+  const trade = {
+    id: 'T'+TRADE_ID++, symbol:sym, entry, sl, tp, qty,
+    halfSL: entry-(entry-sl)/2, halfTP: entry+(tp-entry)/2,
+    slPct, tpPct, ltp:entry, pnl:0, pnlPct:0,
+    status:'active', alerted:{},
+    addedAt: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
+  };
+  TRADES.push(trade);
+  // Send Telegram confirmation
+  const msg = `📊 <b>NEW TRADE ADDED</b>\n\n📈 ${sym}\n💰 Entry: ₹${entry}\n🔴 SL: ₹${sl} (-${slPct}%)\n⚠️ 50% SL: ₹${trade.halfSL.toFixed(2)}\n✅ 50% TP: ₹${trade.halfTP.toFixed(2)}\n🎯 Target: ₹${tp} (+${tpPct}%)\n📦 Qty: ${qty}\n\n✅ Monitoring started!`;
+  sendTelegramAlert(msg);
+  showToast(`✓ ${sym} added — monitoring started`, 'green');
+  // Clear form
+  ['tb-sym','tb-entry','tb-sl','tb-tp','tb-sl-pct','tb-tp-pct'].forEach(id => { const e=document.getElementById(id); if(e) e.value=''; });
+  document.getElementById('tb-qty').value='1';
+  const p=document.getElementById('tb-preview'); if(p) p.style.display='none';
+  renderPage();
+}
+
+function tbRemoveTrade(id) {
+  const trade = TRADES.find(t=>t.id===id);
+  if(trade) sendTelegramAlert(`🗑 Trade <b>${trade.symbol}</b> removed from monitoring.`);
+  TRADES = TRADES.filter(t=>t.id!==id);
+  showToast('Trade removed', 'amber');
+  renderPage();
+}
+
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 // Add demo client on load
+document.addEventListener('click', e => {
+  if (!e.target.closest('#nc-stock-search') && !e.target.closest('#nc-dynamic-results')) {
+    const dd = document.getElementById('nc-dynamic-results');
+    if (dd) dd.style.display = 'none';
+  }
+});
+
 window.addEventListener('load', () => {
   updateMarketStatus();
   setInterval(updateMarketStatus, 30000);
@@ -1882,6 +2442,10 @@ window.addEventListener('load', () => {
   }, 5000);
   
   showToast('PortfolioOS loaded — 2 demo clients added', 'green');
+  // Fetch complete NSE stock list
+  fetchAllNSEStocks().then(() => {
+    console.log('NSE stocks loaded:', ALL_NSE_STOCKS_DYNAMIC.length);
+  });
 });
 </script>
 </body>
